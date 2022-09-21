@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="331.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="395.0" prefWidth="325.0">
+            <children>
+                <TextField layoutX="23.0" layoutY="20.0" prefHeight="25.0" prefWidth="280.0"
+                           promptText="ls -la {{variable}} | grep {{something}}"/>
+                <TableView editable="true" layoutX="89.0" layoutY="76.0" nodeOrientation="LEFT_TO_RIGHT"
+                           prefHeight="200.0" prefWidth="149.0" AnchorPane.leftAnchor="89.0">
+                    <columns>
+                        <TableColumn prefWidth="75.0" text="Name"/>
+                        <TableColumn prefWidth="75.0" text="Value"/>
+                    </columns>
+                </TableView>
+                <Button layoutX="104.0" layoutY="315.0" mnemonicParsing="false" text="Copy command"/>
+            </children>
+        </AnchorPane>
+    </content>
+</ScrollPane>
