@@ -4,45 +4,35 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import org.fxmisc.richtext.CodeArea?>
 <BorderPane fx:id="paneMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mmsoftware.controller.MainController">
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mmsoftware.controller.MainController">
     <left>
-
     </left>
     <center>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <center>
-                <TextArea fx:id="txtFileContent" prefHeight="200.0" prefWidth="200.0"
-                          BorderPane.alignment="CENTER_RIGHT">
-                    <BorderPane.margin>
-                        <Insets/>
-                    </BorderPane.margin>
-                </TextArea>
-            </center>
-            <left>
+        <SplitPane fx:id="splitPane" dividerPositions="0.15" opacity="0.71" prefHeight="450.0" prefWidth="514.0"
+                   BorderPane.alignment="TOP_LEFT">
+            <items>
+                <ListView fx:id="fileList" onMouseClicked="#handleFileListItemClick" layoutX="-7.0" layoutY="59.0"
+                          prefHeight="448.0" prefWidth="150.0"
+                          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                          AnchorPane.topAnchor="0.0">
+                    <placeholder>
+                        <Label text="Select folder to load files"/>
+                    </placeholder>
+                </ListView>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <top>
-                        <Label fx:id="lblFolderPath" text="Select a folder" AnchorPane.bottomAnchor="0.0"
-                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
-                               BorderPane.alignment="TOP_LEFT">
-                            <BorderPane.margin>
-                                <Insets top="5.0"/>
-                            </BorderPane.margin>
-                        </Label>
-                    </top>
-                    <left>
-                        <ListView fx:id="fileList" onMouseClicked="#handleFileListItemClick" prefHeight="318.0"
-                                  prefWidth="177.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
-                            <BorderPane.margin>
-                                <Insets top="10.0"/>
-                            </BorderPane.margin>
-                        </ListView>
-                    </left>
+                    <center>
+                        <CodeArea fx:id="txtFileContent" editable="false" BorderPane.alignment="CENTER_RIGHT"/>
+                    </center>
                 </BorderPane>
-            </left>
-        </BorderPane>
+            </items>
+            <BorderPane.margin>
+                <Insets/>
+            </BorderPane.margin>
+        </SplitPane>
+
     </center>
     <top>
         <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -53,7 +43,6 @@
                     </tooltip>
                     <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-
                             <Image url="@open_32.png"/>
                         </ImageView>
                     </graphic>

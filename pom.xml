@@ -13,6 +13,7 @@
         <javafx-fxml.version>17.0.1</javafx-fxml.version>
         <spring-context.version>5.3.23</spring-context.version>
         <logback-classic.version>1.2.3</logback-classic.version>
+        <richtextfx.version>0.10.9</richtextfx.version>
     </properties>
     <dependencies>
         <dependency>
@@ -40,6 +41,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback-classic.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>${richtextfx.version}</version>
         </dependency>
 
     </dependencies>

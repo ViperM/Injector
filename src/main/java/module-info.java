@@ -5,6 +5,8 @@ module com.mmsoftware {
     requires spring.context;
     requires static lombok;
     requires slf4j.api;
+    requires org.fxmisc.richtext;
+    requires reactfx;
 
     opens com.mmsoftware to javafx.fxml;
     exports com.mmsoftware;
