@@ -127,17 +127,21 @@ public class MainController implements Initializable {
 
             ObservableValue<Boolean> visible = Val.map(
                     shownLine,
-                    sl -> !(VARIABLES_CATCH_PATTERN
-                            .matcher(codeArea.getParagraph(lineNumber).getText())
-                            .results()
-                            .map(MatchResult::group)
-                            .count() == 0
-                    )
+                    sl -> isPlayButtonVisible(lineNumber)
             );
 
             triangle.visibleProperty().bind(((Val<Boolean>) visible).conditionOnShowing(triangle));
 
             return triangle;
+        }
+
+        private boolean isPlayButtonVisible(int lineNumber) {
+            return codeArea.getParagraphs().size() > lineNumber && VARIABLES_CATCH_PATTERN
+                    .matcher(codeArea.getParagraph(lineNumber).getText())
+                    .results()
+                    .map(MatchResult::group)
+                    .findAny()
+                    .isPresent();
         }
 
     }
