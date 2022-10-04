@@ -1,13 +1,17 @@
 package com.mmsoftware.controller;
 
+import com.mmsoftware.Main;
 import com.mmsoftware.service.FileService;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -15,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +60,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         IntFunction<Node> numberFactory = LineNumberFactory.get(txtFileContent);
-        IntFunction<Node> arrowFactory = new ArrowFactory(txtFileContent.currentParagraphProperty(), txtFileContent);
+        IntFunction<Node> arrowFactory = new ArrowFactory(txtFileContent.currentParagraphProperty(), txtFileContent, paneMain);
         IntFunction<Node> graphicFactory = line -> {
             HBox hbox = new HBox(
                     numberFactory.apply(line),
@@ -82,6 +87,7 @@ public class MainController implements Initializable {
         }
     }
 
+    //Exceptions!
     @FXML
     public void handleFileListItemClick(MouseEvent arg) {
         String folderPath = (String) paneMain.getScene().getWindow().getUserData();
@@ -100,17 +106,21 @@ public class MainController implements Initializable {
     static class ArrowFactory implements IntFunction<Node> {
         private final ObservableValue<Integer> shownLine;
         private final CodeArea codeArea;
+        private final BorderPane parentScene;
 
-        ArrowFactory(ObservableValue<Integer> shownLine, CodeArea codeArea) {
+        ArrowFactory(ObservableValue<Integer> shownLine, CodeArea codeArea, BorderPane borderPane) {
             this.shownLine = shownLine;
             this.codeArea = codeArea;
+            this.parentScene = borderPane;
         }
 
         @Override
         public Node apply(int lineNumber) {
             Polygon triangle = new Polygon(0.0, 0.0, 10.0, 5.0, 0.0, 10.0);
+
             triangle.setOnMouseClicked(m -> {
 //                System.out.println(VARIABLES_CATCH_PATTERN.matcher(codeArea.getParagraph(lineNumber).getText()).results().map(MatchResult::group).collect(Collectors.toList()));
+                handleVariablesViewWindow(parentScene);
             });
             triangle.setFill(Color.GREEN);
             triangle.setCursor(Cursor.HAND);
@@ -130,5 +140,25 @@ public class MainController implements Initializable {
             return triangle;
         }
 
+    }
+
+    private static void handleVariablesViewWindow(BorderPane borderPane) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("variables-window.fxml"));
+            Stage stage = new Stage();
+
+            stage.initOwner(borderPane.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+            Parent load = fxmlLoader.load();
+            Scene scene = new Scene(load);
+            stage.setScene(scene);
+            stage.setTitle("Provide variable values to inject");
+            stage.setAlwaysOnTop(true);
+            stage.setResizable(false);
+            stage.setUserData("Alamakota");
+            stage.showAndWait();
+        } catch (IOException e) {
+            log.error("Couldn't load variables window", e);
+        }
     }
 }
