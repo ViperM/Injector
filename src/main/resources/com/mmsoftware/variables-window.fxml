@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-
+<?import javafx.scene.layout.BorderPane?>
 <BorderPane fx:id="paneVariables" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.mmsoftware.controller.VariablesController">
     <center>
-        <TableView fx:id="tableVariables" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <TableView fx:id="tableVariables" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"
+                   editable="true">
             <columns>
                 <TableColumn fx:id="columnVariable" prefWidth="75.0" text="variable"/>
                 <TableColumn fx:id="columnValue" prefWidth="75.0" text="value"/>
@@ -16,9 +16,10 @@
         </TableView>
     </center>
     <bottom>
-        <Button mnemonicParsing="false" text="Apply" BorderPane.alignment="CENTER"/>
+        <Button fx:id="btnClipboardCopy" mnemonicParsing="false" text="Copy to clipboard and Close"
+                onMouseClicked="#handleCopyToClipboardButtonClick" BorderPane.alignment="CENTER"/>
     </bottom>
     <top>
-        <TextField BorderPane.alignment="CENTER"/>
+        <TextField fx:id="textInjectedLine" editable="false" BorderPane.alignment="CENTER"/>
     </top>
 </BorderPane>
