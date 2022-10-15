@@ -34,10 +34,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.IntFunction;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -120,7 +122,11 @@ public class MainController implements Initializable {
 
             triangle.setOnMouseClicked(m -> {
 //                System.out.println(VARIABLES_CATCH_PATTERN.matcher(codeArea.getParagraph(lineNumber).getText()).results().map(MatchResult::group).collect(Collectors.toList()));
-                handleVariablesViewWindow(parentScene);
+                List<String> variables = VARIABLES_CATCH_PATTERN.matcher(codeArea.getParagraph(lineNumber).getText())
+                        .results()
+                        .map(MatchResult::group)
+                        .collect(Collectors.toList());
+                handleVariablesViewWindow(parentScene, variables);
             });
             triangle.setFill(Color.GREEN);
             triangle.setCursor(Cursor.HAND);
@@ -146,20 +152,20 @@ public class MainController implements Initializable {
 
     }
 
-    private static void handleVariablesViewWindow(BorderPane borderPane) {
+    private static void handleVariablesViewWindow(BorderPane borderPane, List<String> variables) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("variables-window.fxml"));
             Stage stage = new Stage();
-
             stage.initOwner(borderPane.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
             Parent load = fxmlLoader.load();
+            VariablesController variablesController = fxmlLoader.getController();
+            variablesController.setVariables(variables);
             Scene scene = new Scene(load);
             stage.setScene(scene);
             stage.setTitle("Provide variable values to inject");
             stage.setAlwaysOnTop(true);
             stage.setResizable(false);
-            stage.setUserData("Alamakota");
             stage.showAndWait();
         } catch (IOException e) {
             log.error("Couldn't load variables window", e);
