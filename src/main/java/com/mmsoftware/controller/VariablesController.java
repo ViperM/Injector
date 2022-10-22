@@ -1,6 +1,7 @@
 package com.mmsoftware.controller;
 
 import com.mmsoftware.model.VariableValuePair;
+import com.mmsoftware.service.FileContentManipulationService;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -27,8 +28,6 @@ import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,6 +36,8 @@ import java.util.stream.Collectors;
 public class VariablesController implements Initializable {
     private static final String VARIABLE_COLUMN_NAME = "variable";
     private static final String VALUE_COLUMN_NAME = "value";
+
+    private final FileContentManipulationService fileContentManipulationService;
 
     @FXML
     private TableView<VariableValuePair> tableVariables;
@@ -56,8 +57,6 @@ public class VariablesController implements Initializable {
     @Setter
     private String line;
 
-    private static final Pattern VARIABLES_CATCH_PATTERN = Pattern.compile("\\{.*?\\}");
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
@@ -70,7 +69,7 @@ public class VariablesController implements Initializable {
         setTableCellFactories();
         ObservableList<VariableValuePair> rows = createObservableRowList();
 
-        List<String> variables = extractVariables(line);
+        List<String> variables = fileContentManipulationService.extractVariables(line);
         rows.addAll(mapVariablesToTableRowObjects(variables));
 
         handleTableCellEditionEvents();
@@ -129,13 +128,6 @@ public class VariablesController implements Initializable {
         copyToClipboard(line);
         Stage stage = (Stage) btnClipboardCopy.getScene().getWindow();
         stage.close();
-    }
-
-    private List<String> extractVariables(String line) {
-        return VARIABLES_CATCH_PATTERN.matcher(line)
-                .results()
-                .map(MatchResult::group)
-                .collect(Collectors.toList());
     }
 
     private void copyToClipboard(String toCopy) {

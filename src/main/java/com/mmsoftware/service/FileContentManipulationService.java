@@ -21,7 +21,7 @@ public class FileContentManipulationService {
                 .collect(Collectors.toList());
     }
 
-    private boolean isAnyVariablePresent(String text) {
+    public boolean isAnyVariablePresent(String text) {
         return VARIABLES_CATCH_PATTERN
                 .matcher(text)
                 .results()

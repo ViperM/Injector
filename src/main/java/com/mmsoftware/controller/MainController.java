@@ -1,32 +1,24 @@
 package com.mmsoftware.controller;
 
-import com.mmsoftware.Main;
+import com.mmsoftware.factory.ArrowFactory;
+import com.mmsoftware.service.FileContentManipulationService;
 import com.mmsoftware.service.FileService;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.reactfx.value.Val;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -36,15 +28,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 import java.util.function.IntFunction;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MainController implements Initializable {
 
-    private static final Pattern VARIABLES_CATCH_PATTERN = Pattern.compile("\\{.*?\\}");
+    private final FileContentManipulationService fileContentManipulationService;
 
     @FXML
     private BorderPane paneMain;
@@ -60,7 +50,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         IntFunction<Node> numberFactory = LineNumberFactory.get(txtFileContent);
-        IntFunction<Node> arrowFactory = new ArrowFactory(txtFileContent.currentParagraphProperty(), txtFileContent, paneMain);
+        IntFunction<Node> arrowFactory = new ArrowFactory(txtFileContent.currentParagraphProperty(), txtFileContent, paneMain, fileContentManipulationService);
         IntFunction<Node> graphicFactory = line -> {
             HBox hbox = new HBox(
                     numberFactory.apply(line),
@@ -100,67 +90,6 @@ public class MainController implements Initializable {
             txtFileContent.appendText(content);
         } catch (IOException exception) {
             log.debug(String.format("Unexpected problem while loading the file: <%s>", selectedFilePath), exception);
-        }
-    }
-
-    static class ArrowFactory implements IntFunction<Node> {
-        private final ObservableValue<Integer> shownLine;
-        private final CodeArea codeArea;
-        private final BorderPane parentScene;
-
-        ArrowFactory(ObservableValue<Integer> shownLine, CodeArea codeArea, BorderPane borderPane) {
-            this.shownLine = shownLine;
-            this.codeArea = codeArea;
-            this.parentScene = borderPane;
-        }
-
-        @Override
-        public Node apply(int lineNumber) {
-            Polygon triangle = new Polygon(0.0, 0.0, 10.0, 5.0, 0.0, 10.0);
-
-            triangle.setOnMouseClicked(m -> {
-                handleVariablesViewWindow(parentScene, codeArea.getParagraph(lineNumber).getText());
-            });
-            triangle.setFill(Color.GREEN);
-            triangle.setCursor(Cursor.HAND);
-
-            ObservableValue<Boolean> visible = Val.map(
-                    shownLine,
-                    sl -> isPlayButtonVisible(lineNumber)
-            );
-
-            triangle.visibleProperty().bind(((Val<Boolean>) visible).conditionOnShowing(triangle));
-
-            return triangle;
-        }
-
-        private boolean isPlayButtonVisible(int lineNumber) {
-            return codeArea.getParagraphs().size() > lineNumber && VARIABLES_CATCH_PATTERN
-                    .matcher(codeArea.getParagraph(lineNumber).getText())
-                    .results()
-                    .map(MatchResult::group)
-                    .findAny()
-                    .isPresent();
-        }
-    }
-
-    private static void handleVariablesViewWindow(BorderPane borderPane, String line) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("variables-window.fxml"));
-            Stage stage = new Stage();
-            stage.initOwner(borderPane.getScene().getWindow());
-            stage.initModality(Modality.WINDOW_MODAL);
-            Parent load = fxmlLoader.load();
-            VariablesController variablesController = fxmlLoader.getController();
-            variablesController.setLine(line);
-            Scene scene = new Scene(load);
-            stage.setScene(scene);
-            stage.setTitle("Provide variable values to inject");
-            stage.setAlwaysOnTop(true);
-            stage.setResizable(true);
-            stage.showAndWait();
-        } catch (IOException e) {
-            log.error("Couldn't load variables window", e);
         }
     }
 }

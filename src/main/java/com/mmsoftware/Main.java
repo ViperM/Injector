@@ -1,15 +1,10 @@
 package com.mmsoftware;
 
-import com.mmsoftware.configuration.AppConfig;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Slf4j
 @Component
@@ -23,53 +18,45 @@ public class Main extends javafx.application.Application {
     public void start(Stage stage) throws Exception {
         log.debug("Starting the app...");
         stage.setMaximized(true);
-        scene = new Scene(loadFXML("main-window"), DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        FXMLLoader fxmlLoader = IoCUtils.loadFXML("main-window.fxml");
+        scene = new Scene(fxmlLoader.load(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
         stage.setScene(scene);
         stage.setTitle("Injector");
         stage.show();
     }
 
-    private Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(fxml + ".fxml"));
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(AppConfig.class);
-        context.refresh();
-        fxmlLoader.setControllerFactory(context::getBean);
-        return fxmlLoader.load();
-    }
-
     /*TODO
-    porzadek w strukturze kodu
-    wpisac serwisy
-    wywalic klase Arrow
+    porzadek w strukturze kodu - 10m - DONE
+    wpisac serwisy - 10m - DONE
+    wywalic klase Arrow - 20m - DONE
 porzadki z oknem zmiennych:
-	tabelka dostosowana do szerokosci okna
-	przyciski kopiuj i zamknij
-	zmiana text field na combo boxa
-	przechowywanie wartosci zmiennych w combobox
-	pamietanie wartosci wpisywanych dla danych zmiennych
-	zapis danych po odkliknieciu, a nie po enter
-	przycisk copy nieaktywny dopoki nie ma zmian
+	tabelka dostosowana do szerokosci okna - 30m
+	przyciski kopiuj i zamknij - 10m
+	zmiana text field na combo boxa - 60m
+	przechowywanie wartosci zmiennych w combobox - 60m
+	pamietanie wartosci wpisywanych dla danych zmiennych - 30m
+	zapis danych po odkliknieciu, a nie po enter - 30m
+	przycisk copy nieaktywny dopoki nie ma zmian - 15m
 
 zapisywanie plikow
-	wskanzik ze plik edytowany
-	przycisk zapisywnaia
-	zapisywanie
+	wskanzik ze plik edytowany 15m
+	przycisk zapisywnaia 15m
+	zapisywanie 20m
 
-wstrzykiwanie zmiennych w obszarze zaznaczenia
+wstrzykiwanie zmiennych w obszarze zaznaczenia - 30m
 ustawienia:
-	ile zmiennych pamietac
-	jaki pattern na oznaczanie zmiennych
-	pliki o jakich rozszerzeniach filtrowac
-	pokaz numery linii
-	zawijanie wierszy
+	ile zmiennych pamietac - 60m
+	jaki pattern na oznaczanie zmiennych - 30m
+	pliki o jakich rozszerzeniach filtrowac - 30m
+	pokaz numery linii - 15m
+	zawijanie wierszy - 15m
 
 wyglad
-    strzykawka zamiast dziobka
-    wezszy divider
+    strzykawka zamiast dziobka - 20m
+    wezszy divider - 30m
 
 obsluga bledow:
-    dwie zmienne ktore sie tak samo nazywaja
-    duze pliki
+    dwie zmienne ktore sie tak samo nazywaja - distinct - 5m
+    duze pliki - 15m
      */
 }
