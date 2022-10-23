@@ -32,11 +32,12 @@ public class Main extends javafx.application.Application {
 porzadki z oknem zmiennych:
 	tabelka dostosowana do szerokosci okna - 30m
 	przyciski kopiuj i zamknij - 10m
-	zmiana text field na combo boxa - 60m
-	przechowywanie wartosci zmiennych w combobox - 60m
-	pamietanie wartosci wpisywanych dla danych zmiennych - 30m
+	zmiana text field na combo boxa - 60m - DONE
+	przechowywanie wartosci zmiennych w combobox - 60m - PARTIALLY DONE
+	pamietanie wartosci wpisywanych dla danych zmiennych - 30m - PARTIALLY DONE
 	zapis danych po odkliknieciu, a nie po enter - 30m
 	przycisk copy nieaktywny dopoki nie ma zmian - 15m
+	dodac kolorowanie zmiennych na czerwono
 
 zapisywanie plikow
 	wskanzik ze plik edytowany 15m

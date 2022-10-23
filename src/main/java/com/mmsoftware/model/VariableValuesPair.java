@@ -2,12 +2,12 @@ package com.mmsoftware.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class VariableValuePair {
+public class VariableValuesPair {
 
     private final SimpleStringProperty variable;
     private final SimpleStringProperty value;
 
-    public VariableValuePair(String variable, String value) {
+    public VariableValuesPair(String variable, String value) {
         this.variable = new SimpleStringProperty(variable);
         this.value = new SimpleStringProperty(value);
     }

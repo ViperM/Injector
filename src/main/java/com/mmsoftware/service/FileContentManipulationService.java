@@ -18,6 +18,7 @@ public class FileContentManipulationService {
         return VARIABLES_CATCH_PATTERN.matcher(line)
                 .results()
                 .map(MatchResult::group)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
