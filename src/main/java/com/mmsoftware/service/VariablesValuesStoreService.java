@@ -1,54 +1,80 @@
 package com.mmsoftware.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 @Slf4j
 @Service
 public class VariablesValuesStoreService {
     private static final String VARIABLES_TXT = "variables.txt";
+    private static final int MAX_NUMBER_OF_STORED_VARIABLE_VALUES = 10;
+    private static final String ARRAY_DELIMITER = ",";
+    private static final int MAX_NUMBER_OF_STORED_VARIABLES = 100;
 
-    private final Properties properties;
+    private Configuration config;
+    private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
 
     public VariablesValuesStoreService() {
-        this.properties = new Properties();
         File variablesFile = new File(VARIABLES_TXT);
         try {
             variablesFile.createNewFile();
-            loadVariables(VARIABLES_TXT);
-        } catch (IOException ex) {
+            this.builder = buildConfiguration(VARIABLES_TXT);
+            this.config = builder.getConfiguration();
+        } catch (ConfigurationException | IOException ex) {
             log.error("Unexpected error while opening the variable values file!", ex);
         }
 
     }
 
-    private void loadVariables(String fileName) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(fileName);
-        properties.load(fileInputStream);
+    private FileBasedConfigurationBuilder<FileBasedConfiguration> buildConfiguration(String fileName) throws ConfigurationException {
+        return new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                .configure(new Parameters().properties()
+                        .setFileName(fileName));
     }
 
     public void addVariableValue(String variableName, String variableValue) {
-        properties.setProperty(variableName, variableValue);
+        LinkedList<String> variableValues = getVariableValues(variableName);
+        variableValues.remove(variableValue);
+        variableValues.addLast(variableValue);
+        if (variableValues.size() > MAX_NUMBER_OF_STORED_VARIABLE_VALUES) {
+            variableValues.removeFirst();
+        }
+        String allUpdatedProperties = String.join(ARRAY_DELIMITER, variableValues);
+        config.setProperty(variableName, allUpdatedProperties);
         saveAllVariables();
     }
 
-    public String getVariableValues(String variableName) {
-        return properties.getProperty(variableName);
+    public LinkedList<String> getVariableValues(String variableName) {
+        String variable = config.getString(variableName);
+        if (variable == null) {
+            return new LinkedList<>();
+        }
+        return new LinkedList<>(Arrays.asList(variable.split(ARRAY_DELIMITER)));
     }
 
     public void saveAllVariables() {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(VARIABLES_TXT);
-            properties.store(fileOutputStream, null);
-        } catch (IOException ex) {
+            if (config.size() > MAX_NUMBER_OF_STORED_VARIABLES) {
+                Iterator<String> iterator = config.getKeys();
+                if (iterator.hasNext()) {
+                    config.clearProperty(iterator.next());
+                }
+            }
+            builder.save();
+        } catch (ConfigurationException ex) {
             log.error("Unexpected error while trying to load stored variable values!", ex);
-            ;
         }
     }
 }

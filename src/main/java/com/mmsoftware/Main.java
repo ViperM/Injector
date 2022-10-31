@@ -26,6 +26,7 @@ public class Main extends javafx.application.Application {
     }
 
     /*TODO
+    przecinek niedopuszczalny jako wartoscv zmiennej!
     porzadek w strukturze kodu - 10m - DONE
     wpisac serwisy - 10m - DONE
     wywalic klase Arrow - 20m - DONE

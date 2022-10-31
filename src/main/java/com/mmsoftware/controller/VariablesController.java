@@ -27,6 +27,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -112,13 +113,23 @@ public class VariablesController implements Initializable {
     }
 
     private void replaceVariableWithRealValuesInPreviewIncrementally(VariableValuesPair pair) {
-        String replacedVariablesLine = textInjectedLine.getText().replace(pair.getVariable(), pair.getValue());
-        this.textInjectedLine.setText(replacedVariablesLine);
+        if (pair.getVariable() != null && pair.getValue() != null) {
+            String replacedVariablesLine = textInjectedLine.getText().replace(pair.getVariable(), pair.getValue());
+            this.textInjectedLine.setText(replacedVariablesLine);
+        }
     }
 
     private void handleTableCellEditionEvents() {
         columnValue.setCellFactory(param -> {
-            ComboBoxTableCell<VariableValuesPair, String> ct = new ComboBoxTableCell<>();
+            //compose not inherit!
+            ComboBoxTableCell<VariableValuesPair, String> ct = new ComboBoxTableCell<>() {
+                @Override
+                public void startEdit() {
+                    VariableValuesPair variableValuesPair = getTableRow().getItem();
+                    getItems().setAll(variableValuesPair.getAllValues());
+                    super.startEdit();
+                }
+            };
             ct.setComboBoxEditable(true);
             return ct;
         });
@@ -137,7 +148,13 @@ public class VariablesController implements Initializable {
     private List<VariableValuesPair> mapVariablesToTableRowObjects(List<String> variables) {
         List<VariableValuesPair> variableValuesPairs = new ArrayList<>();
         variables.stream()
-                .map(variable -> new VariableValuesPair(variable, variablesValuesStoreService.getVariableValues(variable)))
+                .map(variable -> {
+                            LinkedList<String> values = variablesValuesStoreService.getVariableValues(variable);
+                            return new VariableValuesPair(variable, values.isEmpty() ? null : values.getLast(),
+                                    FXCollections.observableArrayList(variablesValuesStoreService.getVariableValues(variable))
+                            );
+                        }
+                )
                 .forEach(variableValuesPair -> {
                     variableValuesPairs.add(variableValuesPair);
                     if (variableValuesPair.getValue() != null) {

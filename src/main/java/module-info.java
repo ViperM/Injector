@@ -7,6 +7,8 @@ module com.mmsoftware {
     requires slf4j.api;
     requires org.fxmisc.richtext;
     requires reactfx;
+    requires org.apache.commons.configuration2;
+    requires java.sql;
 
     opens com.mmsoftware to javafx.fxml;
     exports com.mmsoftware;
