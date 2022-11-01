@@ -181,6 +181,12 @@ public class VariablesController implements Initializable {
         saveAllVariableValuesFromTable();
     }
 
+    @FXML
+    public void handleCancelWindow(MouseEvent arg) {
+        Stage stage = (Stage) btnClipboardCopy.getScene().getWindow();
+        stage.close();
+    }
+
     private void copyToClipboard(String toCopy) {
         StringSelection stringSelection = new StringSelection(toCopy);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

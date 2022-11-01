@@ -26,17 +26,16 @@ public class Main extends javafx.application.Application {
     }
 
     /*TODO
-    przecinek niedopuszczalny jako wartoscv zmiennej!
     porzadek w strukturze kodu - 10m - DONE
     wpisac serwisy - 10m - DONE
     wywalic klase Arrow - 20m - DONE
 porzadki z oknem zmiennych:
-	tabelka dostosowana do szerokosci okna - 30m
-	przyciski kopiuj i zamknij - 10m
+	tabelka dostosowana do szerokosci okna - 30m - DONE
+	przyciski kopiuj i zamknij - 10m - DONE
 	zmiana text field na combo boxa - 60m - DONE
-	przechowywanie wartosci zmiennych w combobox - 60m - PARTIALLY DONE
-	pamietanie wartosci wpisywanych dla danych zmiennych - 30m - PARTIALLY DONE
-	zapis danych po odkliknieciu, a nie po enter - 30m
+	przechowywanie wartosci zmiennych w combobox - 60m - DONE
+	pamietanie wartosci wpisywanych dla danych zmiennych - 30m - DONE
+	zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 	przycisk copy nieaktywny dopoki nie ma zmian - 15m
 	dodac kolorowanie zmiennych na czerwono
 
@@ -58,6 +57,7 @@ wyglad
     wezszy divider - 30m
 
 obsluga bledow:
+    przecinek niedopuszczalny jako wartoscv zmiennej!
     dwie zmienne ktore sie tak samo nazywaja - distinct - 5m
     duze pliki - 15m
      */
