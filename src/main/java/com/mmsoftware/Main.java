@@ -36,13 +36,12 @@ porzadki z oknem zmiennych:
 	przechowywanie wartosci zmiennych w combobox - 60m - DONE
 	pamietanie wartosci wpisywanych dla danych zmiennych - 30m - DONE
 	zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
-	przycisk copy nieaktywny dopoki nie ma zmian - 15m
 	dodac kolorowanie zmiennych na czerwono
 
 zapisywanie plikow
-	wskanzik ze plik edytowany 15m
-	przycisk zapisywnaia 15m
-	zapisywanie 20m
+	wskanzik ze plik edytowany 15m DONE
+	przycisk zapisywnaia 15m - DONE
+	zapisywanie 20m - DONE
 
 wstrzykiwanie zmiennych w obszarze zaznaczenia - 30m
 ustawienia:
@@ -55,6 +54,8 @@ ustawienia:
 wyglad
     strzykawka zamiast dziobka - 20m
     wezszy divider - 30m
+    wieksza czcionka w codeArea i w tabelce
+    zoom
 
 obsluga bledow:
     przecinek niedopuszczalny jako wartoscv zmiennej!
