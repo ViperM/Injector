@@ -27,6 +27,7 @@ import java.util.function.IntFunction;
 @Component
 @RequiredArgsConstructor
 public class ArrowFactory implements IntFunction<Node> {
+    private static final double[] PLAY_BUTTON_COORDINATES = {0.0, 0.0, 10.0, 5.0, 0.0, 10.0};
     private final ObservableValue<Integer> shownLine;
     private final CodeArea codeArea;
     private final BorderPane parentScene;
@@ -34,9 +35,11 @@ public class ArrowFactory implements IntFunction<Node> {
 
     @Override
     public Node apply(int lineNumber) {
-        Polygon triangle = new Polygon(0.0, 0.0, 10.0, 5.0, 0.0, 10.0);
+        Polygon triangle = new Polygon(PLAY_BUTTON_COORDINATES);
 
-        triangle.setOnMouseClicked(m -> handleVariablesViewWindow(parentScene, codeArea.getParagraph(lineNumber).getText()));
+        triangle.setOnMouseClicked(m ->
+                handleVariablesViewWindow(parentScene, codeArea.getParagraph(lineNumber).getText())
+        );
         triangle.setFill(Color.GREEN);
         triangle.setCursor(Cursor.HAND);
 

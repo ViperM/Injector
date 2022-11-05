@@ -2,6 +2,7 @@ package com.mmsoftware.service;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FileService {
 
-    private static final List<String> allowedExtensions = List.of(
-            ".txt",
-            ".sh",
-            ".bat",
-            ".cmd"
-    );
+    private final AppProperties appProperties;
 
     public ObservableList<String> getAllFilesFromDirectory(String folderAbsolutePath) {
         try {
@@ -29,7 +26,7 @@ public class FileService {
                     .filter(path -> !Files.isDirectory(path))
                     .map(Path::getFileName)
                     .map(Path::toString)
-                    .filter(s -> isFileNameContainsOneOfTheGivenExtensions(s, allowedExtensions))
+                    .filter(s -> isFileNameContainsOneOfTheGivenExtensions(s, appProperties.getSupportedExtensions()))
                     .collect(Collectors.toCollection(FXCollections::observableArrayList));
         } catch (IOException exception) {
             log.debug(String.format("Unexpected problem while loading the folder: <%s>", folderAbsolutePath), exception);

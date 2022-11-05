@@ -45,21 +45,37 @@ zapisywanie plikow
 
 wstrzykiwanie zmiennych w obszarze zaznaczenia - 30m
 ustawienia:
-	ile zmiennych pamietac - 60m
+	ile zmiennych pamietac - 60m DONE
 	jaki pattern na oznaczanie zmiennych - 30m
 	pliki o jakich rozszerzeniach filtrowac - 30m
 	pokaz numery linii - 15m
 	zawijanie wierszy - 15m
 
 wyglad
-    strzykawka zamiast dziobka - 20m
     wezszy divider - 30m
     wieksza czcionka w codeArea i w tabelce
     zoom
+    zawijanie wierszy
 
 obsluga bledow:
+    testy
     przecinek niedopuszczalny jako wartoscv zmiennej!
-    dwie zmienne ktore sie tak samo nazywaja - distinct - 5m
+    dwie zmienne ktore sie tak samo nazywaja - distinct - 5m DONE
     duze pliki - 15m
+    co gdy brak plikow z zadanym rozszerzeniem w katalogu?
+
+settingsy:
+    gdy ktos usunie supported extension otwartego pliku trzeba go zapisac
+    dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow
+     */
+
+    /*
+    ma usuwac tyle zmiennych i wartosci ile jest ponad limit
+    po zaladowaniu okna variables nic nie powinien podmienisac (?)
+    wiele typow zmiennych w jednej linii
+    {abc}, czy <abc> to powinna byc dla niego ta sama zmienna
+    autosave propertiesow
+    pytanie o save pliku i zapis propertiesow przy zamykaniu
+    leci exception w proeprties aplikacji, bo jest ustawiony separator - przerpbic na wloasne
      */
 }

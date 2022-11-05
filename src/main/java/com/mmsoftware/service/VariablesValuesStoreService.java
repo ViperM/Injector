@@ -19,23 +19,22 @@ import java.util.LinkedList;
 @Service
 public class VariablesValuesStoreService {
     private static final String VARIABLES_TXT = "variables.txt";
-    private static final int MAX_NUMBER_OF_STORED_VARIABLE_VALUES = 10;
     private static final String ARRAY_DELIMITER = ",";
-    private static final int MAX_NUMBER_OF_STORED_VARIABLES = 100;
 
     private Configuration config;
     private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
+    private AppProperties appProperties;
 
-    public VariablesValuesStoreService() {
+    public VariablesValuesStoreService(AppProperties appProperties) {
         File variablesFile = new File(VARIABLES_TXT);
         try {
             variablesFile.createNewFile();
             this.builder = buildConfiguration(VARIABLES_TXT);
             this.config = builder.getConfiguration();
+            this.appProperties = appProperties;
         } catch (ConfigurationException | IOException ex) {
             log.error("Unexpected error while opening the variable values file!", ex);
         }
-
     }
 
     private FileBasedConfigurationBuilder<FileBasedConfiguration> buildConfiguration(String fileName) throws ConfigurationException {
@@ -48,7 +47,7 @@ public class VariablesValuesStoreService {
         LinkedList<String> variableValues = getVariableValues(variableName);
         variableValues.remove(variableValue);
         variableValues.addLast(variableValue);
-        if (variableValues.size() > MAX_NUMBER_OF_STORED_VARIABLE_VALUES) {
+        if (variableValues.size() > appProperties.getMaxNumberOfValues()) {
             variableValues.removeFirst();
         }
         String allUpdatedProperties = String.join(ARRAY_DELIMITER, variableValues);
@@ -66,7 +65,7 @@ public class VariablesValuesStoreService {
 
     public void saveAllVariables() {
         try {
-            if (config.size() > MAX_NUMBER_OF_STORED_VARIABLES) {
+            if (config.size() > appProperties.getMaxNumberOfVariables()) {
                 Iterator<String> iterator = config.getKeys();
                 if (iterator.hasNext()) {
                     config.clearProperty(iterator.next());
@@ -74,7 +73,7 @@ public class VariablesValuesStoreService {
             }
             builder.save();
         } catch (ConfigurationException ex) {
-            log.error("Unexpected error while trying to load stored variable values!", ex);
+            log.error("Unexpected error while trying to save stored variable values!", ex);
         }
     }
 }

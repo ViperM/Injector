@@ -1,16 +1,21 @@
 package com.mmsoftware.controller;
 
+import com.mmsoftware.IoCUtils;
 import com.mmsoftware.factory.ArrowFactory;
 import com.mmsoftware.model.FileInfo;
+import com.mmsoftware.service.AppProperties;
 import com.mmsoftware.service.FileContentManipulationService;
 import com.mmsoftware.service.FileService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -45,6 +50,8 @@ import java.util.function.IntFunction;
 public class MainController implements Initializable {
 
     private final FileContentManipulationService fileContentManipulationService;
+
+    private final AppProperties appProperties;
 
     @FXML
     private BorderPane paneMain;
@@ -83,7 +90,7 @@ public class MainController implements Initializable {
             return hbox;
         };
         txtFileContent.setParagraphGraphicFactory(graphicFactory);
-        txtFileContent.getParagraph(0);
+        appProperties.getEnabledVariables();
     }
 
     @FXML
@@ -181,6 +188,25 @@ public class MainController implements Initializable {
         fileInfo.setChanged(false);
         fileInfo.setFileInitialContent(txtFileContent.getText());
         btnSave.setDisable(true);
+    }
+
+    @FXML
+    private void handleSettingsViewWindow(MouseEvent e) {
+        try {
+            FXMLLoader fxmlLoader = IoCUtils.loadFXML("settings-window.fxml");
+            Stage stage = new Stage();
+            stage.initOwner(paneMain.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+            Parent load = fxmlLoader.load();
+            Scene scene = new Scene(load);
+            stage.setScene(scene);
+            stage.setTitle("Settings");
+            stage.setAlwaysOnTop(true);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException ex) {
+            log.error("Couldn't load settings window", ex);
+        }
     }
 
 
