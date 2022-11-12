@@ -150,7 +150,7 @@ public class VariablesController implements Initializable {
         variables.stream()
                 .map(variable -> {
                             LinkedList<String> values = variablesValuesStoreService.getVariableValues(variable);
-                            return new VariableValuesPair(variable, values.isEmpty() ? null : values.getLast(),
+                            return new VariableValuesPair(variable, values.isEmpty() ? null : values.getFirst(),
                                     FXCollections.observableArrayList(variablesValuesStoreService.getVariableValues(variable))
                             );
                         }

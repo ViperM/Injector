@@ -21,14 +21,17 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <CheckBox mnemonicParsing="false" text="{variable}"/>
-                        <CheckBox mnemonicParsing="false" text="&lt;variable&gt;" GridPane.columnIndex="1"/>
-                        <CheckBox mnemonicParsing="false" text="[variable]" GridPane.rowIndex="1"/>
-                        <CheckBox mnemonicParsing="false" text="\$(variable)" GridPane.columnIndex="1"
+                        <CheckBox fx:id="chBoxCurlyBrackets" mnemonicParsing="false" text="{variable}"/>
+                        <CheckBox fx:id="chBoxAngleBrackets" mnemonicParsing="false" text="&lt;variable&gt;"
+                                  GridPane.columnIndex="1"/>
+                        <CheckBox fx:id="chBoxSquareBrackets" mnemonicParsing="false" text="[variable]"
                                   GridPane.rowIndex="1"/>
-                        <CheckBox mnemonicParsing="false" text="\%variable%" GridPane.rowIndex="2"/>
-                        <CheckBox mnemonicParsing="false" text="#variable#" GridPane.columnIndex="1"
+                        <CheckBox fx:id="chBoxDollarBrackets" mnemonicParsing="false" text="\$(variable)"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <CheckBox fx:id="chBoxPercentageBrackets" mnemonicParsing="false" text="\%variable%"
                                   GridPane.rowIndex="2"/>
+                        <CheckBox fx:id="chBoxHashBrackets" mnemonicParsing="false" text="#variable#"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                     </children>
                 </GridPane>
             </content>
@@ -43,15 +46,24 @@
             <content>
                 <VBox prefHeight="200.0" prefWidth="100.0">
                     <children>
-                        <ListView prefHeight="200.0" prefWidth="200.0"/>
+                        <ListView fx:id="listExtensions" editable="true" prefHeight="200.0" prefWidth="200.0"/>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                             <children>
-                                <Button mnemonicParsing="false" text="+">
+                                <Button fx:id="btnAddExtension" mnemonicParsing="false"
+                                        onMouseClicked="#handleAddExtensionButtonClick" text="+">
                                     <HBox.margin>
                                         <Insets right="5.0"/>
                                     </HBox.margin>
                                 </Button>
-                                <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="26.0" text="-"/>
+                                <Button fx:id="btnSubtractExtension" mnemonicParsing="false"
+                                        onMouseClicked="#handleSubtractExtensionButtonClick" prefHeight="25.0"
+                                        prefWidth="26.0" text="-"/>
+                                <Button fx:id="restoreDefaults" mnemonicParsing="false"
+                                        onMouseClicked="#handleRestoreDefaultsButtonClick" text="Restore defaults">
+                                    <HBox.margin>
+                                        <Insets left="200.0"/>
+                                    </HBox.margin>
+                                </Button>
                             </children>
                             <VBox.margin>
                                 <Insets top="10.0"/>
@@ -75,8 +87,8 @@
                     <children>
                         <Label text="Max number of variables"/>
                         <Label text="Max number of values" GridPane.rowIndex="1"/>
-                        <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1"/>
-                        <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Spinner fx:id="spinnerVariablesMax" GridPane.columnIndex="1"/>
+                        <Spinner fx:id="spinnerValuesMax" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                     </children>
                 </GridPane>
             </content>
@@ -85,13 +97,14 @@
             </VBox.margin>
         </TitledPane>
         <HBox fx:id="paneButtons" alignment="CENTER">
-            <Button fx:id="btnApply" layoutX="104.0" layoutY="18.0" mnemonicParsing="false" text="Apply"
-                    BorderPane.alignment="CENTER">
+            <Button fx:id="btnApply" layoutX="104.0" layoutY="18.0" mnemonicParsing="false"
+                    onMouseClicked="#handleApplyButtonClick" text="Apply" BorderPane.alignment="CENTER">
                 <HBox.margin>
                     <Insets right="80.0"/>
                 </HBox.margin>
             </Button>
-            <Button fx:id="btnCancel" layoutX="355.0" layoutY="18.0" mnemonicParsing="false" text="Cancel">
+            <Button fx:id="btnCancel" layoutX="355.0" layoutY="18.0" mnemonicParsing="false"
+                    onMouseClicked="#handleCancelWindow" text="Cancel">
                 <HBox.margin>
                     <Insets/>
                 </HBox.margin>

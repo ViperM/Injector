@@ -90,7 +90,6 @@ public class MainController implements Initializable {
             return hbox;
         };
         txtFileContent.setParagraphGraphicFactory(graphicFactory);
-        appProperties.getEnabledVariables();
     }
 
     @FXML

@@ -14,6 +14,7 @@ public class Main extends javafx.application.Application {
     private static final double DEFAULT_HEIGHT = 600.0;
     private static Scene scene;
 
+
     @Override
     public void start(Stage stage) throws Exception {
         log.debug("Starting the app...");
@@ -26,56 +27,41 @@ public class Main extends javafx.application.Application {
     }
 
     /*TODO
-    porzadek w strukturze kodu - 10m - DONE
-    wpisac serwisy - 10m - DONE
-    wywalic klase Arrow - 20m - DONE
-porzadki z oknem zmiennych:
-	tabelka dostosowana do szerokosci okna - 30m - DONE
-	przyciski kopiuj i zamknij - 10m - DONE
-	zmiana text field na combo boxa - 60m - DONE
-	przechowywanie wartosci zmiennych w combobox - 60m - DONE
-	pamietanie wartosci wpisywanych dla danych zmiennych - 30m - DONE
-	zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
-	dodac kolorowanie zmiennych na czerwono
+pytanie o save pliku przy zamykaniu - problem z beanem w main
+dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow - REFRESH
+walidacja patternow w settingsach - ma byc tylko .3 znaki
+przecinek niedopuszczalny jako wartoscv zmiennej!
+co gdy brak plikow z zadanym rozszerzeniem w katalogu? Komunikat, czy ladujemy pusta liste?
+gdy ktos usunie supported extension otwartego pliku trzeba go zapisac przy aktualizacji listy
+po zaladowaniu okna variables nic nie powinien podmienisac (?) - aktualnie laduje ostatnia zapamietana wartosc
+{abc}, czy <abc> to powinna byc dla niego ta sama zmienna - nie powinien pamietac ogranicznikow (?)
+funkcjonalnosc nowego pliku - wyjscie z trybu edycji, aktywne tylko jak zaladujemy katalog
+wstrzykiwanie zmiennych w obszarze zaznaczenia
+zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
+okno ABOUT
+fat jar
 
-zapisywanie plikow
-	wskanzik ze plik edytowany 15m DONE
-	przycisk zapisywnaia 15m - DONE
-	zapisywanie 20m - DONE
-
-wstrzykiwanie zmiennych w obszarze zaznaczenia - 30m
-ustawienia:
-	ile zmiennych pamietac - 60m DONE
-	jaki pattern na oznaczanie zmiennych - 30m
-	pliki o jakich rozszerzeniach filtrowac - 30m
-	pokaz numery linii - 15m
-	zawijanie wierszy - 15m
-
-wyglad
-    wezszy divider - 30m
-    wieksza czcionka w codeArea i w tabelce
-    zoom
-    zawijanie wierszy
-
-obsluga bledow:
-    testy
-    przecinek niedopuszczalny jako wartoscv zmiennej!
-    dwie zmienne ktore sie tak samo nazywaja - distinct - 5m DONE
-    duze pliki - 15m
-    co gdy brak plikow z zadanym rozszerzeniem w katalogu?
-
-settingsy:
-    gdy ktos usunie supported extension otwartego pliku trzeba go zapisac
-    dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow
-     */
-
+wieksza czcionka w codeArea i w tabelce
+pokaz numery linii - RELOAD
+zawijanie wierszy - RELOAD - czy ok z przyciskami?
+wezszy divider - ZABAWA
+duze pliki - komunikat
+testy - ktore?
+leci exception w proeprties aplikacji, bo jest ustawiony separator - przerpbic na wloasne - problem biblioteki
+dodac kolorowanie zmiennych na czerwono - ZABAWA
+zoom - ZABAWA
+*/
+//##################################################
     /*
-    ma usuwac tyle zmiennych i wartosci ile jest ponad limit
-    po zaladowaniu okna variables nic nie powinien podmienisac (?)
-    wiele typow zmiennych w jednej linii
-    {abc}, czy <abc> to powinna byc dla niego ta sama zmienna
-    autosave propertiesow
-    pytanie o save pliku i zapis propertiesow przy zamykaniu
-    leci exception w proeprties aplikacji, bo jest ustawiony separator - przerpbic na wloasne
+    Spring w java fx
+    Ile beanow tworzy?
+    Co oznacza różny hashcode?
+    Spróbować autowired
+    Jak porownac czy dwa beany są takie same? ==
+    Jak wstrzyknac nested beans?
+    Prześledzić ścieżkę przekazywania do lambdy. Inny wątek
+    Prześledzić czy beany kontrolerów nie powinny być scope
+    Znalezc poprzedni przykład ze Spring w java fx
+    https://stackoverflow.com/questions/44391456/spring-in-a-javafx-application-how-to-property-handle-controller-as-dependency
      */
 }

@@ -1,15 +1,17 @@
 package com.mmsoftware.service;
 
 import com.mmsoftware.model.VARIABLE_PATTERN;
-import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.ConfigurationBuilderEvent;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.ReloadingFileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -30,57 +32,66 @@ public class AppProperties {
     private static final String MAX_VARIABLES_PROPERTY_KEY = "maxVariables";
     private static final String MAX_VALUES_PROPERTY_KEY = "maxValues";
 
-    private Configuration config;
     private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
 
-    @Getter
-    private List<VARIABLE_PATTERN> enabledVariables;
+    public List<VARIABLE_PATTERN> getEnabledVariables() {
+        return getConfiguration().getList(VARIABLE_PATTERN.class, VARIABLES_PROPERTY_KEY, Arrays.asList(VARIABLE_PATTERN.values()));
+    }
 
-    @Getter
-    private List<String> supportedExtensions;
+    public void setEnabledVariables(List<VARIABLE_PATTERN> enabledVariables) {
+        getConfiguration().setProperty(VARIABLES_PROPERTY_KEY, enabledVariables);
+    }
 
-    @Getter
-    private Integer maxNumberOfVariables;
+    public List<String> getSupportedExtensions() {
+        return getConfiguration().getList(String.class, EXTENSIONS_PROPERTY_KEY, DEFAULT_EXTENSIONS);
+    }
 
-    @Getter
-    private Integer maxNumberOfValues;
+    public void setSupportedExtensions(List<String> supportedExtensions) {
+        getConfiguration().setProperty(EXTENSIONS_PROPERTY_KEY, supportedExtensions);
+    }
+
+    public Integer getMaxNumberOfVariables() {
+        return getConfiguration().getInt(MAX_VARIABLES_PROPERTY_KEY, DEFAULT_MAX_NUMBER_OF_VARIABLES);
+    }
+
+    public void setMaxNumberOfVariables(Integer maxNumberOfVariables) {
+        getConfiguration().setProperty(MAX_VARIABLES_PROPERTY_KEY, maxNumberOfVariables);
+    }
+
+    public Integer getMaxNumberOfValues() {
+        return getConfiguration().getInt(MAX_VALUES_PROPERTY_KEY, DEFAULT_MAX_NUMBER_OF_VALUES);
+    }
+
+    public void setMaxNumberOfValues(Integer maxNumberOfValues) {
+        getConfiguration().setProperty(MAX_VALUES_PROPERTY_KEY, maxNumberOfValues);
+    }
+
+    @SneakyThrows
+    private FileBasedConfiguration getConfiguration() {
+        return builder.getConfiguration();
+    }
 
     public AppProperties() {
         File variablesFile = new File(APPLICATION_PROPERTIES_FILE);
         try {
             variablesFile.createNewFile();
             this.builder = buildConfiguration(APPLICATION_PROPERTIES_FILE);
-            this.config = builder.getConfiguration();
-            loadAllProperties();
+            builder.setAutoSave(true);
         } catch (ConfigurationException | IOException ex) {
             log.error("Unexpected error while opening the application proeprties file!", ex);
         }
     }
 
-    private void loadAllProperties() {
-        enabledVariables = config.getList(VARIABLE_PATTERN.class, VARIABLES_PROPERTY_KEY, Arrays.asList(VARIABLE_PATTERN.values()));
-        supportedExtensions = config.getList(String.class, EXTENSIONS_PROPERTY_KEY, DEFAULT_EXTENSIONS);
-        maxNumberOfVariables = config.getInt(MAX_VARIABLES_PROPERTY_KEY, DEFAULT_MAX_NUMBER_OF_VARIABLES);
-        maxNumberOfValues = config.getInt(MAX_VALUES_PROPERTY_KEY, DEFAULT_MAX_NUMBER_OF_VALUES);
-    }
-
-    private void saveAllProperties() {
-        config.setProperty(VARIABLES_PROPERTY_KEY, enabledVariables);
-        config.setProperty(EXTENSIONS_PROPERTY_KEY, supportedExtensions);
-        config.setProperty(MAX_VARIABLES_PROPERTY_KEY, maxNumberOfVariables);
-        config.setProperty(MAX_VALUES_PROPERTY_KEY, maxNumberOfValues);
-        try {
-            builder.save();
-        } catch (ConfigurationException ex) {
-            log.error("Unexpected error while trying to save app properties file!", ex);
-        }
-    }
-
-    private FileBasedConfigurationBuilder<FileBasedConfiguration> buildConfiguration(String fileName) throws ConfigurationException {
-        return new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+    private ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> buildConfiguration(String fileName) throws ConfigurationException {
+        ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
                 .configure(new Parameters().properties()
                         .setFileName(fileName)
-                        .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
+                        .setListDelimiterHandler(new DefaultListDelimiterHandler(','))
+                        .setSynchronizer(new ReadWriteSynchronizer())
+                );
+        builder.addEventListener(ConfigurationBuilderEvent.CONFIGURATION_REQUEST,
+                event -> builder.getReloadingController().checkForReloading(null)
+        );
+        return builder;
     }
-
 }

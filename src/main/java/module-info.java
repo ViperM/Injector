@@ -21,4 +21,8 @@ module com.mmsoftware {
 
     opens com.mmsoftware.model to javafx.base;
     exports com.mmsoftware.model;
+
+    opens com.mmsoftware.service to spring.core;
+    exports com.mmsoftware.service;
+
 }

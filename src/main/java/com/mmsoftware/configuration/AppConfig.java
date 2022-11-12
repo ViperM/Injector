@@ -9,6 +9,7 @@ import com.mmsoftware.service.FileService;
 import com.mmsoftware.service.VariablesValuesStoreService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class AppConfig {
@@ -35,7 +36,7 @@ public class AppConfig {
 
     @Bean
     public SettingsController settingsController() {
-        return new SettingsController();
+        return new SettingsController(appProperties());
     }
 
     @Bean
@@ -44,6 +45,7 @@ public class AppConfig {
     }
 
     @Bean
+    @Scope("singleton")
     public AppProperties appProperties() {
         return new AppProperties();
     }
