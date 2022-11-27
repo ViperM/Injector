@@ -27,7 +27,7 @@ public class Main extends javafx.application.Application {
     }
 
     /*TODO
-pytanie o save pliku przy zamykaniu - problem z beanem w main
+pytanie o save pliku przy zamykaniu - problem z beanem w main, przeniesienie logiki do main
 dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow - REFRESH
 walidacja patternow w settingsach - ma byc tylko .3 znaki
 przecinek niedopuszczalny jako wartoscv zmiennej!
@@ -35,7 +35,7 @@ co gdy brak plikow z zadanym rozszerzeniem w katalogu? Komunikat, czy ladujemy p
 gdy ktos usunie supported extension otwartego pliku trzeba go zapisac przy aktualizacji listy
 po zaladowaniu okna variables nic nie powinien podmienisac (?) - aktualnie laduje ostatnia zapamietana wartosc
 {abc}, czy <abc> to powinna byc dla niego ta sama zmienna - nie powinien pamietac ogranicznikow (?)
-funkcjonalnosc nowego pliku - wyjscie z trybu edycji, aktywne tylko jak zaladujemy katalog
+funkcjonalnosc nowego pliku - wyjscie z trybu edycji, aktywne tylko jak zaladujemy katalog - DONE
 wstrzykiwanie zmiennych w obszarze zaznaczenia
 zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 okno ABOUT

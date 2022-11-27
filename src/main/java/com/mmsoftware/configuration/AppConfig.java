@@ -1,6 +1,7 @@
 package com.mmsoftware.configuration;
 
 import com.mmsoftware.controller.MainController;
+import com.mmsoftware.controller.NewFileController;
 import com.mmsoftware.controller.SettingsController;
 import com.mmsoftware.controller.VariablesController;
 import com.mmsoftware.service.AppProperties;
@@ -26,7 +27,7 @@ public class AppConfig {
 
     @Bean
     public MainController mainController() {
-        return new MainController(fileContentManipulationService(), appProperties(), filesService());
+        return new MainController(fileContentManipulationService(), filesService());
     }
 
     @Bean
@@ -48,5 +49,10 @@ public class AppConfig {
     @Scope("singleton")
     public AppProperties appProperties() {
         return new AppProperties();
+    }
+
+    @Bean
+    public NewFileController newFileController() {
+        return new NewFileController(appProperties());
     }
 }

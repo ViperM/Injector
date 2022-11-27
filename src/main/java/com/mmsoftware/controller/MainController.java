@@ -3,7 +3,6 @@ package com.mmsoftware.controller;
 import com.mmsoftware.IoCUtils;
 import com.mmsoftware.factory.ArrowFactory;
 import com.mmsoftware.model.FileInfo;
-import com.mmsoftware.service.AppProperties;
 import com.mmsoftware.service.FileContentManipulationService;
 import com.mmsoftware.service.FileService;
 import javafx.beans.value.ChangeListener;
@@ -36,6 +35,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -51,13 +51,14 @@ public class MainController implements Initializable {
 
     private final FileContentManipulationService fileContentManipulationService;
 
-    private final AppProperties appProperties;
-
     @FXML
     private BorderPane paneMain;
 
     @FXML
     private ListView<String> fileList;
+
+    @FXML
+    private Button btnNewFile;
 
     private final FileService fileService;
 
@@ -94,6 +95,8 @@ public class MainController implements Initializable {
 
     @FXML
     public void handleOpenFolderButtonClick(MouseEvent arg) {
+        checkIfFileIsChanged();
+        this.currentFilePath = null;
         DirectoryChooser directoryChooser = new DirectoryChooser();
         Window mainWindow = paneMain.getScene().getWindow();
         File selectedFolder = directoryChooser.showDialog(mainWindow);
@@ -105,13 +108,68 @@ public class MainController implements Initializable {
             ((Stage) mainWindow).setTitle("Injector - loaded folder: " + selectedFolderAbsolutePath);
             fileList.setItems(allFilesFromDirectory);
             fillInFileInfoMap(allFilesFromDirectory);
+            btnNewFile.setDisable(false);
         }
+    }
+
+    @FXML
+    public void handleNewFolderButtonClick(MouseEvent arg) {
+        checkIfFileIsChanged();
+        try {
+            FXMLLoader fxmlLoader = IoCUtils.loadFXML("new-file-window.fxml");
+            Stage stage = new Stage();
+            stage.initOwner(paneMain.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
+            Parent load = fxmlLoader.load();
+            Scene scene = new Scene(load);
+            stage.setScene(scene);
+            stage.setTitle("New file");
+            stage.setAlwaysOnTop(true);
+            stage.setResizable(false);
+            stage.showAndWait();
+            if (stage.getUserData() != null) {
+                String newFileName = (String) stage.getUserData();
+                String folderPath = getFolderPath();
+                Path newFilePath = Path.of(folderPath, newFileName);
+                try {
+                    Files.createFile(newFilePath);
+                } catch (FileAlreadyExistsException ex) {
+                    handleFileAlreadyExistsAction(newFilePath);
+                }
+                reloadFilesList(folderPath);
+                fileList.getSelectionModel().select(newFileName);
+                this.currentFilePath = fileList.getSelectionModel().getSelectedItem();
+                handleFileListItemClick(null);
+            }
+
+        } catch (IOException ex) {
+            log.error("Couldn't load new file window", ex);
+        }
+    }
+
+    private void reloadFilesList(String folderPath) {
+        ObservableList<String> allFilesFromDirectory = fileService.getAllFilesFromDirectory(folderPath);
+        fileList.getItems().clear();
+        fileList.setItems(allFilesFromDirectory);
+        fillInFileInfoMap(allFilesFromDirectory);
+    }
+
+    private void handleFileAlreadyExistsAction(Path newFilePath) {
+        Alert alert = new Alert(
+                Alert.AlertType.WARNING,
+                String.format("File <%s> already exists! Creation of the new file aborted", newFilePath),
+                ButtonType.OK
+        );
+        alert.initOwner(btnNewFile.getScene().getWindow());
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle("File already exists");
+        alert.show();
     }
 
     //Exceptions!
     @FXML
     public void handleFileListItemClick(MouseEvent arg) {
-        String folderPath = (String) paneMain.getScene().getWindow().getUserData();
+        String folderPath = getFolderPath();
         Path selectedFilePath = Path.of(folderPath, fileList.getSelectionModel().getSelectedItem());
         log.debug("File path selected to open: {}", selectedFilePath);
         try {
@@ -130,6 +188,10 @@ public class MainController implements Initializable {
         } catch (IOException exception) {
             log.debug(String.format("Unexpected problem while loading the file: <%s>", selectedFilePath), exception);
         }
+    }
+
+    private String getFolderPath() {
+        return (String) paneMain.getScene().getWindow().getUserData();
     }
 
     private void checkIfFileIsChanged() {
@@ -154,6 +216,7 @@ public class MainController implements Initializable {
     }
 
     private void fillInFileInfoMap(ObservableList<String> filePaths) {
+        filesInfo.clear();
         filePaths.forEach(file ->
                 filesInfo.put(file, new FileInfo(null, file, false)));
     }
@@ -172,7 +235,7 @@ public class MainController implements Initializable {
     }
 
     private void saveCurrentFileContent() {
-        String folderPath = (String) paneMain.getScene().getWindow().getUserData();
+        String folderPath = getFolderPath();
         try {
             Files.writeString(Path.of(folderPath, currentFilePath), txtFileContent.getText());
         } catch (IOException ex) {
