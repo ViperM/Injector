@@ -10,15 +10,13 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -69,11 +67,16 @@ public class SettingsController implements Initializable {
 
     @FXML
     public void handleCancelWindow(MouseEvent arg) {
-        closeWindow();
+        closeWindow(Optional.empty());
     }
 
-    private void closeWindow() {
+    private void closeWindow(Optional<Boolean> isListOfFilesNeedsToBeReloaded) {
         Stage stage = (Stage) chBoxAngleBrackets.getScene().getWindow();
+        if (isListOfFilesNeedsToBeReloaded.isPresent()) {
+            stage.setUserData(isListOfFilesNeedsToBeReloaded.get());
+        } else {
+            stage.setUserData(false);
+        }
         stage.close();
     }
 
@@ -88,11 +91,12 @@ public class SettingsController implements Initializable {
         } else if (listExtensions.getItems().isEmpty()) {
             showValidationFailedWindow("You need to select at least one file extension!", "Please select one option at least");
         } else {
+            boolean isListOfFilesNeedsToBeReloaded = !listExtensions.getItems().equals(appProperties.getSupportedExtensions());
             appProperties.setEnabledVariables(selectedVariablePatterns);
             appProperties.setSupportedExtensions(listExtensions.getItems());
             appProperties.setMaxNumberOfVariables(spinnerVariablesMax.getValue());
             appProperties.setMaxNumberOfValues(spinnerValuesMax.getValue());
-            closeWindow();
+            closeWindow(Optional.of(isListOfFilesNeedsToBeReloaded));
         }
     }
 
@@ -121,6 +125,35 @@ public class SettingsController implements Initializable {
         listExtensions.getItems().add("");
         int size = listExtensions.getItems().size();
         listExtensions.edit(size - 1);
+        listExtensions.setCellFactory(lv -> {
+            TextFieldListCell<String> cell = new TextFieldListCell<>() {
+                @Override
+                public void commitEdit(String newValue) {
+                    if (!isEditing()) {
+                        return;
+                    }
+                    if (isNewItemValid(newValue)) {
+                        super.commitEdit(newValue);
+                    }
+                }
+
+                private boolean isNewItemValid(String newValue) {
+                    return !listExtensions.getItems().contains(newValue) && newValue.matches("\\..{3,}");
+                }
+            };
+            cell.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(String object) {
+                    return object;
+                }
+
+                @Override
+                public String fromString(String string) {
+                    return string;
+                }
+            });
+            return cell;
+        });
     }
 
     public void handleSubtractExtensionButtonClick(MouseEvent arg) {

@@ -38,16 +38,19 @@
         <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>
                 <Button fx:id="btnNewFile" disable="true" mnemonicParsing="false"
-                        onMouseClicked="#handleNewFolderButtonClick" prefHeight="32.0" prefWidth="32.0">
+                        onMouseClicked="#handleBtnNewFileClick" prefHeight="32.0" prefWidth="32.0">
+                    <tooltip>
+                        <Tooltip text="New file (ctrl+N)"/>
+                    </tooltip>
                     <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                             <Image url="@new_file-32.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="btnOpenFolder" mnemonicParsing="false" onMouseClicked="#handleOpenFolderButtonClick">
+                <Button fx:id="btnOpenFolder" mnemonicParsing="false" onMouseClicked="#handleBtnOpenFolderClick">
                     <tooltip>
-                        <Tooltip text="Open folder"/>
+                        <Tooltip text="Open folder (ctrl+O)"/>
                     </tooltip>
                     <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -57,6 +60,9 @@
                 </Button>
                 <Button fx:id="btnSave" disable="true" mnemonicParsing="false" onMouseClicked="#handleBtnSaveClick"
                         prefHeight="32.0" prefWidth="32.0">
+                    <tooltip>
+                        <Tooltip text="Save file (ctrl+S)"/>
+                    </tooltip>
                     <graphic>
                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                             <Image url="@save.png"/>

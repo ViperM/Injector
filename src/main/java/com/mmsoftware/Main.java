@@ -27,12 +27,12 @@ public class Main extends javafx.application.Application {
     }
 
     /*TODO
-pytanie o save pliku przy zamykaniu - problem z beanem w main, przeniesienie logiki do main
+pytanie o save pliku przy zamykaniu - problem z beanem w main, przeniesienie logiki do main - DONE
 dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow - REFRESH
-walidacja patternow w settingsach - ma byc tylko .3 znaki
-przecinek niedopuszczalny jako wartoscv zmiennej!
-co gdy brak plikow z zadanym rozszerzeniem w katalogu? Komunikat, czy ladujemy pusta liste?
-gdy ktos usunie supported extension otwartego pliku trzeba go zapisac przy aktualizacji listy
+walidacja patternow w settingsach - ma byc tylko .3 znaki - DONE
+przecinek niedopuszczalny jako wartoscv zmiennej! - DONE
+co gdy brak plikow z zadanym rozszerzeniem w katalogu? Komunikat, czy ladujemy pusta liste? DONE
+gdy ktos usunie supported extension otwartego pliku trzeba go zapisac przy aktualizacji listy DONE
 po zaladowaniu okna variables nic nie powinien podmienisac (?) - aktualnie laduje ostatnia zapamietana wartosc
 {abc}, czy <abc> to powinna byc dla niego ta sama zmienna - nie powinien pamietac ogranicznikow (?)
 funkcjonalnosc nowego pliku - wyjscie z trybu edycji, aktywne tylko jak zaladujemy katalog - DONE

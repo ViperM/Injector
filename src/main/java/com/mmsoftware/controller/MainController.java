@@ -5,6 +5,7 @@ import com.mmsoftware.factory.ArrowFactory;
 import com.mmsoftware.model.FileInfo;
 import com.mmsoftware.service.FileContentManipulationService;
 import com.mmsoftware.service.FileService;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -19,13 +20,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
+import javafx.stage.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fxmisc.richtext.CodeArea;
@@ -81,6 +82,16 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(() -> {
+            KeyCombination saveFileShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+            KeyCombination newFileShortcut = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
+            KeyCombination openFolderShortcut = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
+            Scene scene = paneMain.getScene();
+            scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
+            scene.getAccelerators().put(saveFileShortcut, () -> handleBtnSaveClick(null));
+            scene.getAccelerators().put(newFileShortcut, () -> handleBtnNewFileClick(null));
+            scene.getAccelerators().put(openFolderShortcut, () -> handleBtnOpenFolderClick(null));
+        });
         IntFunction<Node> numberFactory = LineNumberFactory.get(txtFileContent);
         IntFunction<Node> arrowFactory = new ArrowFactory(txtFileContent.currentParagraphProperty(), txtFileContent, paneMain, fileContentManipulationService);
         IntFunction<Node> graphicFactory = line -> {
@@ -93,8 +104,12 @@ public class MainController implements Initializable {
         txtFileContent.setParagraphGraphicFactory(graphicFactory);
     }
 
+    private void closeWindowEvent(WindowEvent event) {
+        checkIfFileIsChanged();
+    }
+
     @FXML
-    public void handleOpenFolderButtonClick(MouseEvent arg) {
+    public void handleBtnOpenFolderClick(MouseEvent arg) {
         checkIfFileIsChanged();
         this.currentFilePath = null;
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -104,6 +119,17 @@ public class MainController implements Initializable {
             log.debug("Folder selected to load: {}", selectedFolder.getAbsolutePath());
             String selectedFolderAbsolutePath = selectedFolder.getAbsolutePath();
             ObservableList<String> allFilesFromDirectory = fileService.getAllFilesFromDirectory(selectedFolderAbsolutePath);
+            if (allFilesFromDirectory.isEmpty()) {
+                Alert alert = new Alert(
+                        Alert.AlertType.INFORMATION,
+                        String.format("The folder '%s' doesn't contain any files with preferred extension. Please create the first file", selectedFolderAbsolutePath),
+                        ButtonType.OK
+                );
+                alert.initOwner(paneMain.getScene().getWindow());
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("Folder is empty");
+                alert.showAndWait();
+            }
             mainWindow.setUserData(selectedFolderAbsolutePath);
             ((Stage) mainWindow).setTitle("Injector - loaded folder: " + selectedFolderAbsolutePath);
             fileList.setItems(allFilesFromDirectory);
@@ -113,37 +139,39 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    public void handleNewFolderButtonClick(MouseEvent arg) {
-        checkIfFileIsChanged();
-        try {
-            FXMLLoader fxmlLoader = IoCUtils.loadFXML("new-file-window.fxml");
-            Stage stage = new Stage();
-            stage.initOwner(paneMain.getScene().getWindow());
-            stage.initModality(Modality.WINDOW_MODAL);
-            Parent load = fxmlLoader.load();
-            Scene scene = new Scene(load);
-            stage.setScene(scene);
-            stage.setTitle("New file");
-            stage.setAlwaysOnTop(true);
-            stage.setResizable(false);
-            stage.showAndWait();
-            if (stage.getUserData() != null) {
-                String newFileName = (String) stage.getUserData();
-                String folderPath = getFolderPath();
-                Path newFilePath = Path.of(folderPath, newFileName);
-                try {
-                    Files.createFile(newFilePath);
-                } catch (FileAlreadyExistsException ex) {
-                    handleFileAlreadyExistsAction(newFilePath);
+    public void handleBtnNewFileClick(MouseEvent arg) {
+        if (!btnNewFile.isDisabled()) {
+            checkIfFileIsChanged();
+            try {
+                FXMLLoader fxmlLoader = IoCUtils.loadFXML("new-file-window.fxml");
+                Stage stage = new Stage();
+                stage.initOwner(paneMain.getScene().getWindow());
+                stage.initModality(Modality.WINDOW_MODAL);
+                Parent load = fxmlLoader.load();
+                Scene scene = new Scene(load);
+                stage.setScene(scene);
+                stage.setTitle("New file");
+                stage.setAlwaysOnTop(true);
+                stage.setResizable(false);
+                stage.showAndWait();
+                if (stage.getUserData() != null) {
+                    String newFileName = (String) stage.getUserData();
+                    String folderPath = getFolderPath();
+                    Path newFilePath = Path.of(folderPath, newFileName);
+                    try {
+                        Files.createFile(newFilePath);
+                    } catch (FileAlreadyExistsException ex) {
+                        handleFileAlreadyExistsAction(newFilePath);
+                    }
+                    reloadFilesList(folderPath);
+                    fileList.getSelectionModel().select(newFileName);
+                    this.currentFilePath = fileList.getSelectionModel().getSelectedItem();
+                    handleFileListItemClick(null);
                 }
-                reloadFilesList(folderPath);
-                fileList.getSelectionModel().select(newFileName);
-                this.currentFilePath = fileList.getSelectionModel().getSelectedItem();
-                handleFileListItemClick(null);
-            }
 
-        } catch (IOException ex) {
-            log.error("Couldn't load new file window", ex);
+            } catch (IOException ex) {
+                log.error("Couldn't load new file window", ex);
+            }
         }
     }
 
@@ -245,11 +273,13 @@ public class MainController implements Initializable {
 
     @FXML
     public void handleBtnSaveClick(MouseEvent arg) {
-        saveCurrentFileContent();
-        FileInfo fileInfo = filesInfo.get(currentFilePath);
-        fileInfo.setChanged(false);
-        fileInfo.setFileInitialContent(txtFileContent.getText());
-        btnSave.setDisable(true);
+        if (!btnSave.isDisabled()) {
+            saveCurrentFileContent();
+            FileInfo fileInfo = filesInfo.get(currentFilePath);
+            fileInfo.setChanged(false);
+            fileInfo.setFileInitialContent(txtFileContent.getText());
+            btnSave.setDisable(true);
+        }
     }
 
     @FXML
@@ -266,6 +296,23 @@ public class MainController implements Initializable {
             stage.setAlwaysOnTop(true);
             stage.setResizable(false);
             stage.showAndWait();
+            Boolean isFileListNeedsToBeReloaded = (Boolean) stage.getUserData();
+            if (getFolderPath() != null && isFileListNeedsToBeReloaded) {
+                Alert alert = new Alert(
+                        Alert.AlertType.CONFIRMATION,
+                        "You changed the list of preferred file extensions. Do you want to reload the current list to reflect all changes?",
+                        ButtonType.YES,
+                        ButtonType.NO
+                );
+                alert.initOwner(paneMain.getScene().getWindow());
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setTitle("File extension list has been modified");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.YES) {
+                    checkIfFileIsChanged();
+                    reloadFilesList(getFolderPath());
+                }
+            }
         } catch (IOException ex) {
             log.error("Couldn't load settings window", ex);
         }

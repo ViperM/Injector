@@ -129,6 +129,13 @@ public class VariablesController implements Initializable {
                     getItems().setAll(variableValuesPair.getAllValues());
                     super.startEdit();
                 }
+
+                @Override
+                public void commitEdit(String newValue) {
+                    if (newValue.matches("[A-Za-z0-9]+")) {
+                        super.commitEdit(newValue);
+                    }
+                }
             };
             ct.setComboBoxEditable(true);
             return ct;
