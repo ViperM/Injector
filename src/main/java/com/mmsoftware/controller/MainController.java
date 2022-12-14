@@ -394,7 +394,8 @@ public class MainController implements Initializable {
             stage.setAlwaysOnTop(true);
             stage.setResizable(false);
             stage.showAndWait();
-            Boolean isFileListNeedsToBeReloaded = (Boolean) stage.getUserData();
+            Boolean isFileListNeedsToBeReloaded = (Boolean) Optional.ofNullable(stage.getUserData())
+                    .orElse(false);
             if (getFolderPath() != null && isFileListNeedsToBeReloaded) {
                 Alert alert = new Alert(
                         Alert.AlertType.CONFIRMATION,

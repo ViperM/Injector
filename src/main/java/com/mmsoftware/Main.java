@@ -29,7 +29,7 @@ public class Main extends javafx.application.Application {
     /*TODO
 dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow - REFRESH
 po zaladowaniu okna variables nic nie powinien podmienisac (?) - aktualnie laduje ostatnia zapamietana wartosc
-{abc}, czy <abc> to powinna byc dla niego ta sama zmienna - nie powinien pamietac ogranicznikow (?)
+{abc}, czy <abc> to powinna byc dla niego ta sama zmienna - nie powinien pamietac ogranicznikow - DONE
 zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 jak folder usuniety to powinien byc blad
 testy - ktore?
@@ -40,6 +40,7 @@ duze pliki - komunikat
 duplikaty kodu - controllers and alerts
 okno ABOUT
 fat jar
+logger: bad write method arg count: public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)
 
 
 pytanie o save pliku przy zamykaniu - problem z beanem w main, przeniesienie logiki do main - DONE

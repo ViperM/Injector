@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -24,6 +26,7 @@ public class VariablesValuesStoreService {
 
     private ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> builder;
     private AppProperties appProperties;
+    private static final Pattern VARIABLE_PREFIX_SUFFIX_PATTERN = Pattern.compile("(?<prefix>[^A-Za-z0-9]{1,2})(?<variable>.*?)(?<suffix>[^A-Za-z0-9])");
 
     public VariablesValuesStoreService(AppProperties appProperties) {
         File variablesFile = new File(VARIABLES_TXT);
@@ -57,7 +60,7 @@ public class VariablesValuesStoreService {
             }
         }
         String allUpdatedProperties = String.join(ARRAY_DELIMITER, variableValues);
-        getConfiguration().setProperty(variableName, allUpdatedProperties);
+        getConfiguration().setProperty(extractRawVariableName(variableName), allUpdatedProperties);
         saveAllVariables();
     }
 
@@ -66,8 +69,17 @@ public class VariablesValuesStoreService {
         return builder.getConfiguration();
     }
 
+    private String extractRawVariableName(String variableName) {
+        Matcher matcher = VARIABLE_PREFIX_SUFFIX_PATTERN.matcher(variableName);
+        if (matcher.find()) {
+            return matcher.group("variable");
+        }
+        return variableName;
+    }
+
     public LinkedList<String> getVariableValues(String variableName) {
-        String variable = getConfiguration().getString(variableName);
+        String variableNameWithoutPrefixAndSuffix = extractRawVariableName(variableName);
+        String variable = getConfiguration().getString(variableNameWithoutPrefixAndSuffix);
         if (variable == null) {
             return new LinkedList<>();
         }
