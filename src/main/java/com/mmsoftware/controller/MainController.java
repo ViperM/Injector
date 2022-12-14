@@ -3,6 +3,7 @@ package com.mmsoftware.controller;
 import com.mmsoftware.IoCUtils;
 import com.mmsoftware.factory.ArrowFactory;
 import com.mmsoftware.model.FileInfo;
+import com.mmsoftware.service.AppProperties;
 import com.mmsoftware.service.FileContentManipulationService;
 import com.mmsoftware.service.FileService;
 import javafx.application.Platform;
@@ -16,14 +17,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.*;
@@ -50,7 +45,26 @@ import java.util.function.IntFunction;
 @RequiredArgsConstructor
 public class MainController implements Initializable {
 
+    private static final KeyCombination SAVE_FILE_SHORTCUT = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+    private static final KeyCombination NEW_FILE_SHORTCUT = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
+    private static final KeyCombination OPEN_FOLDER_SHORTCUT = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
+    private static final KeyCombination INCREASE_FONT_SIZE_SHORTCUT = new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN);
+    private static final KeyCombination DECREASE_FONT_SIZE_SHORTCUT = new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN);
+    private static final int MIN_FONT_SIZE = 12;
+    private static final int MAX_FONT_SIZE = 28;
+
     private final FileContentManipulationService fileContentManipulationService;
+
+    private final AppProperties appProperties;
+
+    @FXML
+    public Button btnRunSelection;
+
+    @FXML
+    private CheckBox chkBoxWordWrap;
+
+    @FXML
+    private CheckBox chkBoxLineNumbers;
 
     @FXML
     private BorderPane paneMain;
@@ -67,6 +81,10 @@ public class MainController implements Initializable {
 
     private String currentFilePath;
 
+    private IntFunction<Node> graphicFactoryWithLineNumbers;
+
+    private IntFunction<Node> graphicFactoryWithoutLineNumbers;
+
     ChangeListener<String> changeListener = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -80,32 +98,107 @@ public class MainController implements Initializable {
     @FXML
     private Button btnSave;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
-            KeyCombination saveFileShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
-            KeyCombination newFileShortcut = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
-            KeyCombination openFolderShortcut = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
             Scene scene = paneMain.getScene();
             scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
-            scene.getAccelerators().put(saveFileShortcut, () -> handleBtnSaveClick(null));
-            scene.getAccelerators().put(newFileShortcut, () -> handleBtnNewFileClick(null));
-            scene.getAccelerators().put(openFolderShortcut, () -> handleBtnOpenFolderClick(null));
+            setGlobalKeyboardShortcuts(scene);
+            restoreSettings();
+            setZoomInZoomOutEventFilter();
         });
         IntFunction<Node> numberFactory = LineNumberFactory.get(txtFileContent);
         IntFunction<Node> arrowFactory = new ArrowFactory(txtFileContent.currentParagraphProperty(), txtFileContent, paneMain, fileContentManipulationService);
-        IntFunction<Node> graphicFactory = line -> {
+        graphicFactoryWithLineNumbers = line -> {
             HBox hbox = new HBox(
                     numberFactory.apply(line),
                     arrowFactory.apply(line));
             hbox.setAlignment(Pos.CENTER_LEFT);
             return hbox;
         };
-        txtFileContent.setParagraphGraphicFactory(graphicFactory);
+        graphicFactoryWithoutLineNumbers = line -> {
+            HBox hbox = new HBox(
+                    arrowFactory.apply(line));
+            hbox.setAlignment(Pos.CENTER_LEFT);
+            return hbox;
+        };
+    }
+
+    private void setZoomInZoomOutEventFilter() {
+        txtFileContent.addEventFilter(ScrollEvent.ANY, e -> {
+            if (e.isControlDown()) {
+                if (e.getTextDeltaY() < 0) {
+                    calculateFontSizeAfterZooming(-1);
+                } else {
+                    calculateFontSizeAfterZooming(1);
+                }
+            }
+        });
+    }
+
+    private void calculateFontSizeAfterZooming(int step) {
+        int currentFontSize = extractCurrentEditorFontSize();
+        int newFontSize = currentFontSize + step;
+        if (newFontSize >= MIN_FONT_SIZE && newFontSize <= MAX_FONT_SIZE) {
+            applyCurrentEditorFontSize(newFontSize);
+        }
+    }
+
+    private void applyCurrentEditorFontSize(int newFontSize) {
+        txtFileContent.setStyle(String.format("-fx-font-size:%d", newFontSize));
+    }
+
+    private int extractCurrentEditorFontSize() {
+        int size;
+        try {
+            size = Integer.parseInt(txtFileContent.getStyle().replace("-fx-font-size:", ""));
+        } catch (NumberFormatException e) {
+            log.error("Current filed editor doesn't contain parsable font size value");
+            size = 12;
+        }
+        return size;
+    }
+
+    private void setGlobalKeyboardShortcuts(Scene scene) {
+        scene.getAccelerators().put(SAVE_FILE_SHORTCUT, () -> handleBtnSaveClick(null));
+        scene.getAccelerators().put(NEW_FILE_SHORTCUT, () -> handleBtnNewFileClick(null));
+        scene.getAccelerators().put(OPEN_FOLDER_SHORTCUT, () -> handleBtnOpenFolderClick(null));
+        scene.getAccelerators().put(INCREASE_FONT_SIZE_SHORTCUT, () -> calculateFontSizeAfterZooming(1));
+        scene.getAccelerators().put(DECREASE_FONT_SIZE_SHORTCUT, () -> calculateFontSizeAfterZooming(-1));
+    }
+
+
+    private void restoreSettings() {
+        if (appProperties.getShowLineNumbers()) {
+            chkBoxLineNumbers.setSelected(true);
+            txtFileContent.setParagraphGraphicFactory(graphicFactoryWithLineNumbers);
+        } else {
+            chkBoxLineNumbers.setSelected(false);
+            txtFileContent.setParagraphGraphicFactory(graphicFactoryWithoutLineNumbers);
+        }
+        String currentWorkingFolder = appProperties.getCurrentWorkingFolder();
+        if (currentWorkingFolder != null) {
+            setWorkingFolderAndLoadFiles(paneMain.getScene().getWindow(), currentWorkingFolder);
+        }
+        applyCurrentEditorFontSize(appProperties.getCurrentFontSize());
+        chkBoxWordWrap.setSelected(appProperties.getWordWrap());
+        txtFileContent.setWrapText(chkBoxWordWrap.isSelected());
     }
 
     private void closeWindowEvent(WindowEvent event) {
         checkIfFileIsChanged();
+        saveSettings();
+    }
+
+    private void saveSettings() {
+        appProperties.setShowLineNumbers(chkBoxLineNumbers.isSelected());
+        String folderPath = getFolderPath();
+        if (folderPath != null) {
+            appProperties.setCurrentWorkingFolder(folderPath);
+        }
+        appProperties.setCurrentFontSize(extractCurrentEditorFontSize());
+        appProperties.setWordWrap(chkBoxWordWrap.isSelected());
     }
 
     @FXML
@@ -116,26 +209,30 @@ public class MainController implements Initializable {
         Window mainWindow = paneMain.getScene().getWindow();
         File selectedFolder = directoryChooser.showDialog(mainWindow);
         if (null != selectedFolder) {
-            log.debug("Folder selected to load: {}", selectedFolder.getAbsolutePath());
             String selectedFolderAbsolutePath = selectedFolder.getAbsolutePath();
-            ObservableList<String> allFilesFromDirectory = fileService.getAllFilesFromDirectory(selectedFolderAbsolutePath);
-            if (allFilesFromDirectory.isEmpty()) {
-                Alert alert = new Alert(
-                        Alert.AlertType.INFORMATION,
-                        String.format("The folder '%s' doesn't contain any files with preferred extension. Please create the first file", selectedFolderAbsolutePath),
-                        ButtonType.OK
-                );
-                alert.initOwner(paneMain.getScene().getWindow());
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.setTitle("Folder is empty");
-                alert.showAndWait();
-            }
-            mainWindow.setUserData(selectedFolderAbsolutePath);
-            ((Stage) mainWindow).setTitle("Injector - loaded folder: " + selectedFolderAbsolutePath);
-            fileList.setItems(allFilesFromDirectory);
-            fillInFileInfoMap(allFilesFromDirectory);
-            btnNewFile.setDisable(false);
+            setWorkingFolderAndLoadFiles(mainWindow, selectedFolderAbsolutePath);
         }
+    }
+
+    private void setWorkingFolderAndLoadFiles(Window mainWindow, String selectedFolderAbsolutePath) {
+        log.debug("Folder selected to load: {}", selectedFolderAbsolutePath);
+        ObservableList<String> allFilesFromDirectory = fileService.getAllFilesFromDirectory(selectedFolderAbsolutePath);
+        if (allFilesFromDirectory.isEmpty()) {
+            Alert alert = new Alert(
+                    Alert.AlertType.INFORMATION,
+                    String.format("The folder '%s' doesn't contain any files with preferred extension. Please create the first file", selectedFolderAbsolutePath),
+                    ButtonType.OK
+            );
+            alert.initOwner(paneMain.getScene().getWindow());
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setTitle("Folder is empty");
+            alert.showAndWait();
+        }
+        mainWindow.setUserData(selectedFolderAbsolutePath);
+        ((Stage) mainWindow).setTitle("Injector - loaded folder: " + selectedFolderAbsolutePath);
+        fileList.setItems(allFilesFromDirectory);
+        fillInFileInfoMap(allFilesFromDirectory);
+        btnNewFile.setDisable(false);
     }
 
     @FXML
@@ -212,6 +309,7 @@ public class MainController implements Initializable {
             filesInfo.get(currentFilePath).setFileInitialContent(txtFileContent.getText());
             filesInfo.get(currentFilePath).setChanged(false);
             btnSave.setDisable(true);
+            btnRunSelection.setDisable(false);
             txtFileContent.textProperty().addListener(changeListener);
         } catch (IOException exception) {
             log.debug(String.format("Unexpected problem while loading the file: <%s>", selectedFilePath), exception);
@@ -319,4 +417,50 @@ public class MainController implements Initializable {
     }
 
 
+    public void handleChkBoxLineNumbers(MouseEvent event) {
+        if (chkBoxLineNumbers.isSelected()) {
+            this.txtFileContent.setParagraphGraphicFactory(graphicFactoryWithLineNumbers);
+        } else {
+            this.txtFileContent.setParagraphGraphicFactory(graphicFactoryWithoutLineNumbers);
+        }
+    }
+
+    public void handleBtnPlaySelectionButton(MouseEvent event) {
+        String selectedText = txtFileContent.getSelectedText().trim();
+        if (!selectedText.equals("") && fileContentManipulationService.isAnyVariablePresent(selectedText)) {
+            try {
+                FXMLLoader fxmlLoader = IoCUtils.loadFXML("variables-window.fxml");
+                Stage stage = new Stage();
+                stage.initOwner(paneMain.getScene().getWindow());
+                stage.initModality(Modality.WINDOW_MODAL);
+                Parent load = fxmlLoader.load();
+                VariablesController variablesController = fxmlLoader.getController();
+                variablesController.setLine(selectedText);
+                Scene scene = new Scene(load);
+                stage.setScene(scene);
+                stage.setTitle("Provide variable values to inject");
+                stage.setAlwaysOnTop(true);
+                stage.setResizable(true);
+                stage.showAndWait();
+            } catch (IOException e) {
+                log.error("Couldn't load variables window", e);
+            }
+        } else {
+
+            Alert alert = new Alert(
+                    Alert.AlertType.WARNING,
+                    "Please select a text which contains at least one parsable variable!",
+                    ButtonType.OK
+            );
+            alert.initOwner(paneMain.getScene().getWindow());
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setTitle("Not parsable content");
+            alert.show();
+
+        }
+    }
+
+    public void handleChkBoxWordWrap(MouseEvent event) {
+        txtFileContent.setWrapText(chkBoxWordWrap.isSelected());
+    }
 }

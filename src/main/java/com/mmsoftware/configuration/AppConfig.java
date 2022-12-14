@@ -27,7 +27,7 @@ public class AppConfig {
 
     @Bean
     public MainController mainController() {
-        return new MainController(fileContentManipulationService(), filesService());
+        return new MainController(fileContentManipulationService(), appProperties(), filesService());
     }
 
     @Bean

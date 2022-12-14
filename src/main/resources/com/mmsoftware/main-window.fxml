@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import org.fxmisc.flowless.VirtualizedScrollPane?>
 <?import org.fxmisc.richtext.CodeArea?>
 <BorderPane fx:id="paneMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="508.0" prefWidth="730.0" xmlns="http://javafx.com/javafx/11.0.1"
@@ -23,8 +24,12 @@
                 </ListView>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <center>
-                        <CodeArea fx:id="txtFileContent" editable="false" visible="false"
-                                  BorderPane.alignment="CENTER_RIGHT"/>
+                        <VirtualizedScrollPane>
+                            <content>
+                                <CodeArea fx:id="txtFileContent" editable="false" visible="false"
+                                          BorderPane.alignment="CENTER_RIGHT"/>
+                            </content>
+                        </VirtualizedScrollPane>
                     </center>
                 </BorderPane>
             </items>
@@ -69,7 +74,8 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button disable="true" mnemonicParsing="false">
+                <Button fx:id="btnRunSelection" disable="true" mnemonicParsing="false"
+                        onMouseClicked="#handleBtnPlaySelectionButton">
                     <tooltip>
                         <Tooltip text="Run selection"/>
                     </tooltip>
@@ -89,13 +95,12 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="9.0"/>
-                <Label text="Font size"/>
-                <ChoiceBox prefHeight="25.0" prefWidth="48.0"/>
                 <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0"/>
-                <CheckBox mnemonicParsing="false" text="Word wrap"/>
+                <CheckBox fx:id="chkBoxWordWrap" onMouseClicked="#handleChkBoxWordWrap" mnemonicParsing="false"
+                          text="Word wrap"/>
                 <Separator orientation="VERTICAL" prefHeight="40.0" prefWidth="0.0"/>
-                <CheckBox mnemonicParsing="false" text="Line numbers"/>
+                <CheckBox fx:id="chkBoxLineNumbers" mnemonicParsing="false" onMouseClicked="#handleChkBoxLineNumbers"
+                          text="Line numbers"/>
                 <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="2.0"/>
                 <Button disable="true" mnemonicParsing="false">
                     <tooltip>

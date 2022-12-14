@@ -31,6 +31,11 @@ public class AppProperties {
     private static final String EXTENSIONS_PROPERTY_KEY = "extensions";
     private static final String MAX_VARIABLES_PROPERTY_KEY = "maxVariables";
     private static final String MAX_VALUES_PROPERTY_KEY = "maxValues";
+    private static final String SHOW_LINE_NUMBERS_PROPERTY_KEY = "showLineNumbers";
+    private static final String CURRENT_FOLDER_PATH_PROPERTY_KEY = "currentFolderPath";
+    private static final String CURRENT_EDITOR_FONT_SIZE_PROPERTY_KEY = "currentFontSize";
+    private static final int DEFAULT_FONT_SIZE = 12;
+    private static final String WORD_WRAP_PROPERTY_KEY = "wordWrap";
 
     private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
 
@@ -64,6 +69,38 @@ public class AppProperties {
 
     public void setMaxNumberOfValues(Integer maxNumberOfValues) {
         getConfiguration().setProperty(MAX_VALUES_PROPERTY_KEY, maxNumberOfValues);
+    }
+
+    public void setShowLineNumbers(boolean show) {
+        getConfiguration().setProperty(SHOW_LINE_NUMBERS_PROPERTY_KEY, show);
+    }
+
+    public boolean getShowLineNumbers() {
+        return getConfiguration().getBoolean(SHOW_LINE_NUMBERS_PROPERTY_KEY, true);
+    }
+
+    public void setCurrentWorkingFolder(String path) {
+        getConfiguration().setProperty(CURRENT_FOLDER_PATH_PROPERTY_KEY, path);
+    }
+
+    public String getCurrentWorkingFolder() {
+        return getConfiguration().getString(CURRENT_FOLDER_PATH_PROPERTY_KEY);
+    }
+
+    public void setCurrentFontSize(int currentFontSize) {
+        getConfiguration().setProperty(CURRENT_EDITOR_FONT_SIZE_PROPERTY_KEY, currentFontSize);
+    }
+
+    public int getCurrentFontSize() {
+        return getConfiguration().getInt(CURRENT_EDITOR_FONT_SIZE_PROPERTY_KEY, DEFAULT_FONT_SIZE);
+    }
+
+    public void setWordWrap(boolean value) {
+        getConfiguration().setProperty(WORD_WRAP_PROPERTY_KEY, value);
+    }
+
+    public boolean getWordWrap() {
+        return getConfiguration().getBoolean(WORD_WRAP_PROPERTY_KEY, false);
     }
 
     @SneakyThrows
