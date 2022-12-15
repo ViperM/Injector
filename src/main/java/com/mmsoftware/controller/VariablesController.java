@@ -42,6 +42,7 @@ public class VariablesController implements Initializable {
 
     private final VariablesValuesStoreService variablesValuesStoreService;
 
+
     @FXML
     private TableView<VariableValuesPair> tableVariables;
 
@@ -50,6 +51,9 @@ public class VariablesController implements Initializable {
 
     @FXML
     private TableColumn<VariableValuesPair, String> columnValue;
+
+    @FXML
+    private TextField textInjectedLineOriginal;
 
     @FXML
     private TextField textInjectedLine;
@@ -69,6 +73,7 @@ public class VariablesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
+            textInjectedLineOriginal.setText(line);
             textInjectedLine.setText(line);
             prepareTableAndTableData();
         });

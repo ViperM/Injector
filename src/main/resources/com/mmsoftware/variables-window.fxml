@@ -44,12 +44,29 @@
     </bottom>
     <top>
         <VBox>
-            <Label layoutX="50.0" layoutY="14.0" text="Command preview:" textFill="#0b1cdb">
+            <Label layoutX="50.0" layoutY="14.0" text="Original command:" textFill="#0b1cdb">
                 <font>
                     <Font name="System Bold" size="12.0"/>
                 </font>
                 <VBox.margin>
                     <Insets bottom="5.0" left="50.0" top="10.0"/>
+                </VBox.margin>
+            </Label>
+            <TextField fx:id="textInjectedLineOriginal" editable="false" layoutX="50.0" layoutY="39.0" prefHeight="37.0"
+                       prefWidth="420.0" BorderPane.alignment="CENTER">
+                <font>
+                    <Font name="Consolas" size="16.0"/>
+                </font>
+                <VBox.margin>
+                    <Insets bottom="10.0" left="50.0" right="50.0"/>
+                </VBox.margin>
+            </TextField>
+            <Label layoutX="50.0" layoutY="14.0" text="Command preview:" textFill="red">
+                <font>
+                    <Font name="System Bold" size="12.0"/>
+                </font>
+                <VBox.margin>
+                    <Insets bottom="5.0" left="50.0"/>
                 </VBox.margin>
             </Label>
             <TextField fx:id="textInjectedLine" editable="false" layoutX="50.0" layoutY="39.0" prefHeight="37.0"

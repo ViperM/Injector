@@ -34,6 +34,7 @@ import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -178,7 +179,7 @@ public class MainController implements Initializable {
             txtFileContent.setParagraphGraphicFactory(graphicFactoryWithoutLineNumbers);
         }
         String currentWorkingFolder = appProperties.getCurrentWorkingFolder();
-        if (currentWorkingFolder != null) {
+        if (currentWorkingFolder != null && Files.exists(Paths.get(currentWorkingFolder))) {
             setWorkingFolderAndLoadFiles(paneMain.getScene().getWindow(), currentWorkingFolder);
         }
         applyCurrentEditorFontSize(appProperties.getCurrentFontSize());
