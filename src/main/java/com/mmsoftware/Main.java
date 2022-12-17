@@ -85,5 +85,6 @@ dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteri
 wezszy divider - ZABAWA
 zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 prevent inherit regexs
+BUG: nie ma mozliwosci wpisania sciezki i znakow specjalnych jako zmiennej!
 */
 }
