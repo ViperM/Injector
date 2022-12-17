@@ -27,24 +27,24 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx-fxml.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx-controls.version}</version>
-            <classifier>win</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx-controls.version}</version>
-            <classifier>linux</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx-controls.version}</version>
-            <classifier>mac</classifier>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.openjfx</groupId>-->
+        <!--            <artifactId>javafx-graphics</artifactId>-->
+        <!--            <version>${javafx-controls.version}</version>-->
+        <!--            <classifier>win</classifier>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.openjfx</groupId>-->
+        <!--            <artifactId>javafx-graphics</artifactId>-->
+        <!--            <version>${javafx-controls.version}</version>-->
+        <!--            <classifier>linux</classifier>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.openjfx</groupId>-->
+        <!--            <artifactId>javafx-graphics</artifactId>-->
+        <!--            <version>${javafx-controls.version}</version>-->
+        <!--            <classifier>mac</classifier>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -117,27 +117,21 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.App</mainClass>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <transformers>
-                                <transformer implementation=
-                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.mmsoftware.App</mainClass>
-                                </transformer>
-                            </transformers>
+                            <mainClass>com.mmsoftware.App</mainClass>
+                            <options>
+                                <option>
+                                    --add-opens
+                                </option>
+                                <option>
+                                    com.mmsoftware/com.mmsoftware.configuration=ALL-UNNAMED
+                                </option>
+                                <option>
+                                    --add-reads
+                                </option>
+                                <option>
+                                    com.mmsoftware=ALL-UNNAMED
+                                </option>
+                            </options>
                         </configuration>
                     </execution>
                 </executions>
