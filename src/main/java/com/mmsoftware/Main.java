@@ -78,8 +78,6 @@ przyciski zoom in zoom out
 okno ABOUT
 duplikaty kodu - controllers and alerts
 testy - ktore?
-logger: bad write method arg count: public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)
-leci exception w proeprties aplikacji, bo jest ustawiony separator - przerpbic na wloasne - problem biblioteki
 zwezanie okna variables
 dynamiczne przeskanowanie otwartego pliku zeby znalezc zmienne wg nowych kryteriow - REFRESH
 wezszy divider - ZABAWA

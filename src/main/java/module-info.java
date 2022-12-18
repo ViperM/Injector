@@ -4,7 +4,7 @@ module com.mmsoftware {
     requires java.desktop;
     requires spring.context;
     requires static lombok;
-    requires slf4j.api;
+    requires org.slf4j;
     requires org.fxmisc.richtext;
     requires reactfx;
     requires org.apache.commons.configuration2;

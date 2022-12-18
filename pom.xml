@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.example</groupId>
+    <groupId>com.mmsoftware</groupId>
     <artifactId>Injector</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
@@ -9,12 +9,13 @@
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
         <lombok.version>1.18.24</lombok.version>
-        <javafx-controls.version>17.0.1</javafx-controls.version>
-        <javafx-fxml.version>17.0.1</javafx-fxml.version>
-        <spring-context.version>5.3.23</spring-context.version>
-        <logback-classic.version>1.2.3</logback-classic.version>
-        <richtextfx.version>0.10.9</richtextfx.version>
-        <commons-configuration2.version>2.7</commons-configuration2.version>
+        <javafx-controls.version>19</javafx-controls.version>
+        <javafx-fxml.version>19</javafx-fxml.version>
+        <spring-context.version>6.0.3</spring-context.version>
+        <logback-classic.version>1.4.5</logback-classic.version>
+        <richtextfx.version>0.11.0</richtextfx.version>
+        <commons-configuration2.version>2.8.0</commons-configuration2.version>
+        <slf4j-api.version>2.0.6</slf4j-api.version>
     </properties>
     <dependencies>
         <dependency>
@@ -27,24 +28,6 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx-fxml.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.openjfx</groupId>-->
-        <!--            <artifactId>javafx-graphics</artifactId>-->
-        <!--            <version>${javafx-controls.version}</version>-->
-        <!--            <classifier>win</classifier>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.openjfx</groupId>-->
-        <!--            <artifactId>javafx-graphics</artifactId>-->
-        <!--            <version>${javafx-controls.version}</version>-->
-        <!--            <classifier>linux</classifier>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.openjfx</groupId>-->
-        <!--            <artifactId>javafx-graphics</artifactId>-->
-        <!--            <version>${javafx-controls.version}</version>-->
-        <!--            <classifier>mac</classifier>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -62,6 +45,11 @@
             <version>${logback-classic.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.fxmisc.richtext</groupId>
             <artifactId>richtextfx</artifactId>
             <version>${richtextfx.version}</version>
@@ -77,7 +65,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx-controls.version}</version>
+            <classifier>win</classifier>
+        </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -89,8 +82,85 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>win</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx-controls.version}</version>
+                    <classifier>win</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx-controls.version}</version>
+                    <classifier>linux</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx-controls.version}</version>
+                    <classifier>linux</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>fat-jar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                                    <transformers>
+                                        <transformer implementation=
+                                                             "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <mainClass>com.mmsoftware.App</mainClass>
+                                        </transformer>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
