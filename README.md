@@ -31,7 +31,7 @@ A fat-jar with all dependencies will be created in the
 
 ### Redistributable package building
 
-`mvn clea install -Predistributable`
+`mvn clean install -Predistributable`
 
 Executable files will be located in the
 `target/redistributable/Injector` folder
