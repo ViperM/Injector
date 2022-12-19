@@ -4,10 +4,7 @@ import com.mmsoftware.controller.MainController;
 import com.mmsoftware.controller.NewFileController;
 import com.mmsoftware.controller.SettingsController;
 import com.mmsoftware.controller.VariablesController;
-import com.mmsoftware.service.AppProperties;
-import com.mmsoftware.service.FileContentManipulationService;
-import com.mmsoftware.service.FileService;
-import com.mmsoftware.service.VariablesValuesStoreService;
+import com.mmsoftware.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -42,13 +39,18 @@ public class AppConfig {
 
     @Bean
     public VariablesValuesStoreService variablesValuesCacheService() {
-        return new VariablesValuesStoreService(appProperties());
+        return new VariablesValuesStoreService(appProperties(), osSpecificService());
     }
 
     @Bean
     @Scope("singleton")
-    public AppProperties appProperties() {
-        return new AppProperties();
+    public AppPropertiesService appProperties() {
+        return new AppPropertiesService(osSpecificService());
+    }
+
+    @Bean
+    public OsSpecificService osSpecificService() {
+        return new OsSpecificService();
     }
 
     @Bean

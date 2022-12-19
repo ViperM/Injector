@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FileService {
 
-    private final AppProperties appProperties;
+    private final AppPropertiesService appPropertiesService;
 
     public ObservableList<String> getAllFilesFromDirectory(String folderAbsolutePath) {
         try {
@@ -26,7 +26,7 @@ public class FileService {
                     .filter(path -> !Files.isDirectory(path))
                     .map(Path::getFileName)
                     .map(Path::toString)
-                    .filter(s -> isFileNameContainsOneOfTheGivenExtensions(s, appProperties.getSupportedExtensions()))
+                    .filter(s -> isFileNameContainsOneOfTheGivenExtensions(s, appPropertiesService.getSupportedExtensions()))
                     .collect(Collectors.toCollection(FXCollections::observableArrayList));
         } catch (IOException exception) {
             log.debug(String.format("Unexpected problem while loading the folder: <%s>", folderAbsolutePath), exception);

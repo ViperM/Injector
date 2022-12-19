@@ -1,6 +1,6 @@
 package com.mmsoftware.controller;
 
-import com.mmsoftware.service.AppProperties;
+import com.mmsoftware.service.AppPropertiesService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
@@ -28,11 +28,11 @@ public class NewFileController implements Initializable {
     @FXML
     private TextField txtNewFileName;
 
-    private final AppProperties appProperties;
+    private final AppPropertiesService appPropertiesService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<String> supportedExtensions = appProperties.getSupportedExtensions();
+        List<String> supportedExtensions = appPropertiesService.getSupportedExtensions();
         choiceExtensions.getItems().addAll(supportedExtensions);
         choiceExtensions.getSelectionModel().selectFirst();
     }

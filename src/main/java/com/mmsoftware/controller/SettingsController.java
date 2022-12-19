@@ -1,7 +1,7 @@
 package com.mmsoftware.controller;
 
 import com.mmsoftware.model.VARIABLE_PATTERN;
-import com.mmsoftware.service.AppProperties;
+import com.mmsoftware.service.AppPropertiesService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,7 +45,7 @@ public class SettingsController implements Initializable {
 
     private Map<VARIABLE_PATTERN, CheckBox> variableCheckboxes = new EnumMap<>(VARIABLE_PATTERN.class);
 
-    private final AppProperties appProperties;
+    private final AppPropertiesService appPropertiesService;
 
     private static final List<String> DEFAULT_EXTENSIONS = List.of(".txt", ".sh", ".bat", ".cmd", ".ps1");
 
@@ -53,15 +53,15 @@ public class SettingsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         listExtensions.setCellFactory(TextFieldListCell.forListView());
         initVariableCheckboxesMap();
-        appProperties.getEnabledVariables().forEach(property ->
+        appPropertiesService.getEnabledVariables().forEach(property ->
                 variableCheckboxes.get(property).setSelected(true)
         );
-        listExtensions.setItems(FXCollections.observableArrayList(appProperties.getSupportedExtensions()));
+        listExtensions.setItems(FXCollections.observableArrayList(appPropertiesService.getSupportedExtensions()));
         spinnerVariablesMax.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                1, appProperties.getMaxNumberOfVariables(), appProperties.getMaxNumberOfVariables())
+                1, appPropertiesService.getMaxNumberOfVariables(), appPropertiesService.getMaxNumberOfVariables())
         );
         spinnerValuesMax.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                1, appProperties.getMaxNumberOfValues(), appProperties.getMaxNumberOfValues())
+                1, appPropertiesService.getMaxNumberOfValues(), appPropertiesService.getMaxNumberOfValues())
         );
     }
 
@@ -91,11 +91,11 @@ public class SettingsController implements Initializable {
         } else if (listExtensions.getItems().isEmpty()) {
             showValidationFailedWindow("You need to select at least one file extension!", "Please select one option at least");
         } else {
-            boolean isListOfFilesNeedsToBeReloaded = !listExtensions.getItems().equals(appProperties.getSupportedExtensions());
-            appProperties.setEnabledVariables(selectedVariablePatterns);
-            appProperties.setSupportedExtensions(listExtensions.getItems());
-            appProperties.setMaxNumberOfVariables(spinnerVariablesMax.getValue());
-            appProperties.setMaxNumberOfValues(spinnerValuesMax.getValue());
+            boolean isListOfFilesNeedsToBeReloaded = !listExtensions.getItems().equals(appPropertiesService.getSupportedExtensions());
+            appPropertiesService.setEnabledVariables(selectedVariablePatterns);
+            appPropertiesService.setSupportedExtensions(listExtensions.getItems());
+            appPropertiesService.setMaxNumberOfVariables(spinnerVariablesMax.getValue());
+            appPropertiesService.setMaxNumberOfValues(spinnerValuesMax.getValue());
             closeWindow(Optional.of(isListOfFilesNeedsToBeReloaded));
         }
     }

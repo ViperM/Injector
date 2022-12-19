@@ -21,19 +21,26 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 public class VariablesValuesStoreService {
-    private static final String VARIABLES_TXT = "variables.txt";
+    private static final String VARIABLES_TXT = "variables.config";
     private static final String ARRAY_DELIMITER = ",";
 
     private ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> builder;
-    private AppProperties appProperties;
+    private AppPropertiesService appPropertiesService;
+    private OsSpecificService osSpecificService;
     private static final Pattern VARIABLE_PREFIX_SUFFIX_PATTERN = Pattern.compile("(?<prefix>[^A-Za-z0-9]{1,2})(?<variable>.*?)(?<suffix>[^A-Za-z0-9])");
 
-    public VariablesValuesStoreService(AppProperties appProperties) {
-        File variablesFile = new File(VARIABLES_TXT);
+    public VariablesValuesStoreService(AppPropertiesService appPropertiesService, OsSpecificService osSpecificService) {
+        this.osSpecificService = osSpecificService;
+        final String variableFilesLocation = osSpecificService
+                .getLocalApplicationDataDirectory()
+                .orElse("") + VARIABLES_TXT;
+
+        File variablesFile = new File(variableFilesLocation);
         try {
+            variablesFile.getParentFile().mkdirs();
             variablesFile.createNewFile();
-            this.builder = buildConfiguration(VARIABLES_TXT);
-            this.appProperties = appProperties;
+            this.builder = buildConfiguration(variableFilesLocation);
+            this.appPropertiesService = appPropertiesService;
         } catch (ConfigurationException | IOException ex) {
             log.error("Unexpected error while opening the variable values file!", ex);
         }
@@ -54,8 +61,8 @@ public class VariablesValuesStoreService {
         variableValues.remove(variableValue);
         variableValues.addFirst(variableValue);
         int currentSize = variableValues.size();
-        if (currentSize > appProperties.getMaxNumberOfValues()) {
-            for (int i = 1; i <= (currentSize - appProperties.getMaxNumberOfValues()); i++) {
+        if (currentSize > appPropertiesService.getMaxNumberOfValues()) {
+            for (int i = 1; i <= (currentSize - appPropertiesService.getMaxNumberOfValues()); i++) {
                 variableValues.removeLast();
             }
         }
@@ -88,7 +95,7 @@ public class VariablesValuesStoreService {
 
     public void saveAllVariables() {
         try {
-            if (getConfiguration().size() > appProperties.getMaxNumberOfVariables()) {
+            if (getConfiguration().size() > appPropertiesService.getMaxNumberOfVariables()) {
                 Iterator<String> iterator = getConfiguration().getKeys();
                 if (iterator.hasNext()) {
                     getConfiguration().clearProperty(iterator.next());

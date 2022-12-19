@@ -85,4 +85,15 @@ zapis danych po odkliknieciu, a nie po enter - 30m - https://docs.oracle.com/jav
 prevent inherit regexs
 BUG: nie ma mozliwosci wpisania sciezki i znakow specjalnych jako zmiennej!
 */
+
+    //TODO
+    //1. git mess issue DONE
+    //2. test os service on win and mac
+    //3. refactor writing properties and test on mac and win
+    //4. mvn package plugin conf --> for win,mac,linux + icon (profiles: installer, raw app)
+    //5. test package on win
+    //6. test package on mac -> how to stop annoying error?
+    //7. test on linux
+    //8. fix bugs
+    //9. publish in github
 }

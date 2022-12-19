@@ -3,7 +3,7 @@ package com.mmsoftware.controller;
 import com.mmsoftware.IoCUtils;
 import com.mmsoftware.factory.ArrowFactory;
 import com.mmsoftware.model.FileInfo;
-import com.mmsoftware.service.AppProperties;
+import com.mmsoftware.service.AppPropertiesService;
 import com.mmsoftware.service.FileContentManipulationService;
 import com.mmsoftware.service.FileService;
 import javafx.application.Platform;
@@ -56,7 +56,7 @@ public class MainController implements Initializable {
 
     private final FileContentManipulationService fileContentManipulationService;
 
-    private final AppProperties appProperties;
+    private final AppPropertiesService appPropertiesService;
 
     @FXML
     public Button btnRunSelection;
@@ -171,19 +171,19 @@ public class MainController implements Initializable {
 
 
     private void restoreSettings() {
-        if (appProperties.getShowLineNumbers()) {
+        if (appPropertiesService.getShowLineNumbers()) {
             chkBoxLineNumbers.setSelected(true);
             txtFileContent.setParagraphGraphicFactory(graphicFactoryWithLineNumbers);
         } else {
             chkBoxLineNumbers.setSelected(false);
             txtFileContent.setParagraphGraphicFactory(graphicFactoryWithoutLineNumbers);
         }
-        String currentWorkingFolder = appProperties.getCurrentWorkingFolder();
+        String currentWorkingFolder = appPropertiesService.getCurrentWorkingFolder();
         if (currentWorkingFolder != null && Files.exists(Paths.get(currentWorkingFolder))) {
             setWorkingFolderAndLoadFiles(paneMain.getScene().getWindow(), currentWorkingFolder);
         }
-        applyCurrentEditorFontSize(appProperties.getCurrentFontSize());
-        chkBoxWordWrap.setSelected(appProperties.getWordWrap());
+        applyCurrentEditorFontSize(appPropertiesService.getCurrentFontSize());
+        chkBoxWordWrap.setSelected(appPropertiesService.getWordWrap());
         txtFileContent.setWrapText(chkBoxWordWrap.isSelected());
     }
 
@@ -193,13 +193,13 @@ public class MainController implements Initializable {
     }
 
     private void saveSettings() {
-        appProperties.setShowLineNumbers(chkBoxLineNumbers.isSelected());
+        appPropertiesService.setShowLineNumbers(chkBoxLineNumbers.isSelected());
         String folderPath = getFolderPath();
         if (folderPath != null) {
-            appProperties.setCurrentWorkingFolder(folderPath);
+            appPropertiesService.setCurrentWorkingFolder(folderPath);
         }
-        appProperties.setCurrentFontSize(extractCurrentEditorFontSize());
-        appProperties.setWordWrap(chkBoxWordWrap.isSelected());
+        appPropertiesService.setCurrentFontSize(extractCurrentEditorFontSize());
+        appPropertiesService.setWordWrap(chkBoxWordWrap.isSelected());
     }
 
     @FXML

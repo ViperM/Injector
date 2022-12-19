@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FileContentManipulationService {
 
-    private final AppProperties appProperties;
+    private final AppPropertiesService appPropertiesService;
 
     public List<String> extractVariables(String line) {
         List<String> extractedVariables = new ArrayList<>();
-        appProperties.getEnabledVariables().forEach(
+        appPropertiesService.getEnabledVariables().forEach(
                 pattern -> extractedVariables.addAll(
                         pattern.regex.matcher(line)
                                 .results()
@@ -32,7 +32,7 @@ public class FileContentManipulationService {
     }
 
     public boolean isAnyVariablePresent(String text) {
-        for (VARIABLE_PATTERN pattern : appProperties.getEnabledVariables()) {
+        for (VARIABLE_PATTERN pattern : appPropertiesService.getEnabledVariables()) {
             boolean isPresent = pattern.regex
                     .matcher(text)
                     .results()

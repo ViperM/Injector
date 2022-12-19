@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class AppProperties {
+public class AppPropertiesService {
 
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
     private static final List<String> DEFAULT_EXTENSIONS = List.of(".txt", ".sh", ".bat", ".cmd", ".ps1");
@@ -38,6 +38,8 @@ public class AppProperties {
     private static final String WORD_WRAP_PROPERTY_KEY = "wordWrap";
 
     private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
+
+    private OsSpecificService osSpecificService;
 
     public List<VARIABLE_PATTERN> getEnabledVariables() {
         return getConfiguration().getList(VARIABLE_PATTERN.class, VARIABLES_PROPERTY_KEY, Arrays.asList(VARIABLE_PATTERN.values()));
@@ -108,14 +110,19 @@ public class AppProperties {
         return builder.getConfiguration();
     }
 
-    public AppProperties() {
-        File variablesFile = new File(APPLICATION_PROPERTIES_FILE);
+    public AppPropertiesService(OsSpecificService osSpecificService) {
+        this.osSpecificService = osSpecificService;
+        final String propertiesFilesLocation = osSpecificService
+                .getLocalApplicationDataDirectory()
+                .orElse("") + APPLICATION_PROPERTIES_FILE;
+        File variablesFile = new File(propertiesFilesLocation);
         try {
+            variablesFile.getParentFile().mkdirs();
             variablesFile.createNewFile();
-            this.builder = buildConfiguration(APPLICATION_PROPERTIES_FILE);
+            this.builder = buildConfiguration(propertiesFilesLocation);
             builder.setAutoSave(true);
         } catch (ConfigurationException | IOException ex) {
-            log.error("Unexpected error while opening the application proeprties file!", ex);
+            log.error("Unexpected error while opening the application properties file!", ex);
         }
     }
 
