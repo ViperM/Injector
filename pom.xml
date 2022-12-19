@@ -20,6 +20,11 @@
         <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <assertj-core.version>3.23.1</assertj-core.version>
+
+        <fatJar.dir>${project.build.directory}/fatJar/</fatJar.dir>
+        <main.class>com.mmsoftware.App</main.class>
+        <destination.dir>${project.build.directory}/redistributable</destination.dir>
+
     </properties>
     <dependencies>
         <dependency>
@@ -116,6 +121,49 @@
 
     <profiles>
         <profile>
+            <id>package-win</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>create-package</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <executable>jpackage</executable>
+                                    <arguments>
+                                        <argument>--verbose</argument>
+                                        <argument>--input</argument>
+                                        <argument>${fatJar.dir}</argument>
+                                        <argument>--name</argument>
+                                        <argument>${project.name}</argument>
+                                        <argument>--main-class</argument>
+                                        <argument>${main.class}</argument>
+                                        <argument>--main-jar</argument>
+                                        <argument>${project.build.finalName}.jar</argument>
+                                        <argument>--type</argument>
+                                        <argument>app-image</argument>
+                                        <argument>--dest</argument>
+                                        <argument>${destination.dir}</argument>
+                                        <argument>--copyright</argument>
+                                        <argument>GPLv3</argument>
+                                        <argument>--vendor</argument>
+                                        <argument>MMsoftware</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>win</id>
             <activation>
                 <os>
@@ -162,33 +210,6 @@
                     <classifier>mac</classifier>
                 </dependency>
             </dependencies>
-        </profile>
-        <profile>
-            <id>fat-jar</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <shadedArtifactAttached>true</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer implementation=
-                                                             "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>com.mmsoftware.App</mainClass>
-                                        </transformer>
-                                    </transformers>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 
@@ -241,6 +262,31 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation=
+                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${main.class}</mainClass>
+                                </transformer>
+                            </transformers>
+                            <outputFile>${fatJar.dir}/${project.build.finalName}.jar</outputFile>
+                            <dependencyReducedPomLocation>
+                                ${project.build.directory}/dependency-reduced-pom.xml
+                            </dependencyReducedPomLocation>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
 </project>
