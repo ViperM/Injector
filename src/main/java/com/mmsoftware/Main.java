@@ -36,7 +36,7 @@ public class Main extends javafx.application.Application {
 
     /*TODO
     test on linux
-    readme
+    readme -> packages + screenshots
     rethink variable patterns
     zoom in and zoom out buttons
     code duplicates - controllers and alerts
