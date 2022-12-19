@@ -216,6 +216,9 @@
                     <classifier>mac</classifier>
                 </dependency>
             </dependencies>
+            <properties>
+                <icon>injector.icns</icon>
+            </properties>
         </profile>
     </profiles>
 
