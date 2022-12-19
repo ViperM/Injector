@@ -52,7 +52,7 @@ class OsSpecificServiceTest {
         }
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             assertTrue(localApplicationDataDirectory.isPresent());
-            assertThat(localApplicationDataDirectory.get().toLowerCase()).contains("Library/Application Support");
+            assertThat(localApplicationDataDirectory.get().toLowerCase()).contains("library/application support");
         }
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             assertTrue(localApplicationDataDirectory.isPresent());
