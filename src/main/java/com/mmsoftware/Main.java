@@ -2,9 +2,12 @@ package com.mmsoftware;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -23,6 +26,7 @@ public class Main extends javafx.application.Application {
         scene = new Scene(fxmlLoader.load(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
         stage.setScene(scene);
         stage.setTitle("Injector");
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("injector.png")).toURI().toString()));
         stage.show();
     }
 
@@ -88,11 +92,11 @@ BUG: nie ma mozliwosci wpisania sciezki i znakow specjalnych jako zmiennej!
 
     //TODO
     //1. git mess issue DONE
-    //2. test os service on win and mac
-    //3. refactor writing properties and test on mac and win
-    //4. mvn package plugin conf --> for win,mac,linux + icon (profiles: installer, raw app)
-    //5. test package on win
-    //6. test package on mac -> how to stop annoying error?
+    //2. test os service on win and mac DONE
+    //3. refactor writing properties and test on mac and win DONE
+    //4. mvn package plugin conf --> for win,mac,linux + icon (profiles: installer, raw app) - DONE
+    //5. test package on win - DONE
+    //6. test package on mac -> how to stop annoying error? - DONE
     //7. test on linux
     //8. fix bugs
     //9. publish in github

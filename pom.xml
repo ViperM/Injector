@@ -121,7 +121,7 @@
 
     <profiles>
         <profile>
-            <id>package-win</id>
+            <id>redistributable</id>
             <build>
                 <plugins>
                     <plugin>
@@ -155,6 +155,9 @@
                                         <argument>GPLv3</argument>
                                         <argument>--vendor</argument>
                                         <argument>MMsoftware</argument>
+                                        <argument>--icon</argument>
+                                        <argument>${project.basedir}/src/main/resources/com/mmsoftware/${icon}
+                                        </argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -178,6 +181,9 @@
                     <classifier>win</classifier>
                 </dependency>
             </dependencies>
+            <properties>
+                <icon>injector.ico</icon>
+            </properties>
         </profile>
         <profile>
             <id>linux</id>
