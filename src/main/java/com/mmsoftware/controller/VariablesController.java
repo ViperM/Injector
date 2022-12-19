@@ -137,7 +137,7 @@ public class VariablesController implements Initializable {
 
                 @Override
                 public void commitEdit(String newValue) {
-                    if (newValue.matches("[A-Za-z0-9]+")) {
+                    if (!newValue.contains(VariablesValuesStoreService.ARRAY_DELIMITER)) {
                         super.commitEdit(newValue);
                     }
                 }

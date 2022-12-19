@@ -21,12 +21,12 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 public class VariablesValuesStoreService {
+    public static final String ARRAY_DELIMITER = ",";
     private static final String VARIABLES_TXT = "variables.config";
-    private static final String ARRAY_DELIMITER = ",";
 
     private ReloadingFileBasedConfigurationBuilder<FileBasedConfiguration> builder;
     private AppPropertiesService appPropertiesService;
-    private OsSpecificService osSpecificService;
+    private final OsSpecificService osSpecificService;
     private static final Pattern VARIABLE_PREFIX_SUFFIX_PATTERN = Pattern.compile("(?<prefix>[^A-Za-z0-9]{1,2})(?<variable>.*?)(?<suffix>[^A-Za-z0-9])");
 
     public VariablesValuesStoreService(AppPropertiesService appPropertiesService, OsSpecificService osSpecificService) {
