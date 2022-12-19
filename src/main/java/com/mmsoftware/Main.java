@@ -35,7 +35,6 @@ public class Main extends javafx.application.Application {
     }
 
     /*TODO
-    ABOUT window
     test on linux
     readme
     rethink variable patterns

@@ -465,4 +465,16 @@ public class MainController implements Initializable {
     public void handleChkBoxWordWrap(MouseEvent event) {
         txtFileContent.setWrapText(chkBoxWordWrap.isSelected());
     }
+
+    public void handleBtnAboutClick(MouseEvent mouseEvent) {
+        Alert alert = new Alert(
+                Alert.AlertType.INFORMATION,
+                "Injector - version 1.0\nCreated by MMsoftware 2022",
+                ButtonType.OK
+        );
+        alert.initOwner(paneMain.getScene().getWindow());
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle("About");
+        alert.showAndWait();
+    }
 }

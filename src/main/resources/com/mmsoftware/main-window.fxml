@@ -102,7 +102,7 @@
                 <CheckBox fx:id="chkBoxLineNumbers" mnemonicParsing="false" onMouseClicked="#handleChkBoxLineNumbers"
                           text="Line numbers"/>
                 <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="2.0"/>
-                <Button disable="true" mnemonicParsing="false">
+                <Button mnemonicParsing="false" onMouseClicked="#handleBtnAboutClick">
                     <tooltip>
                         <Tooltip text="About..."/>
                     </tooltip>
