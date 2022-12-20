@@ -11,6 +11,7 @@ import java.util.Optional;
 public class OsSpecificService {
 
     private static final String MAC_APP_DATA_FOLDER = "Library/Application Support/";
+    private static final String LINUX_APP_DATA_FOLDER = ".config/";
     private static final String WINDOWS_APP_DATA_VARIABLE_NAME = "AppData";
     private static final String USER_HOME_VARIABLE_NAME = "user.home";
     private static final String OS_NAME_VARIABLE_NAME = "os.name";
@@ -54,7 +55,14 @@ public class OsSpecificService {
                             )
                     );
         } else if (osFamily.equals(OSFAMILY.LINUX)) {
-            throw new UnsupportedOperationException("Linux system is not yet supported!");
+            return Optional.ofNullable(getHomeDirectory())
+                    .map(home -> String.join("/", home.orElseThrow(
+                            () -> new IllegalStateException("Cannot find system home directory!")),
+                            LINUX_APP_DATA_FOLDER,
+                            COM_MMSOFTWARE,
+                            "Injector/"
+                            )
+                    );
         }
         return Optional.empty();
     }

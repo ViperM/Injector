@@ -39,7 +39,7 @@ class OsSpecificServiceTest {
         }
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             assertTrue(homeDirectory.isPresent());
-            //TODO
+            assertThat(homeDirectory.get().toLowerCase()).contains("/home/");
         }
     }
 
@@ -56,7 +56,7 @@ class OsSpecificServiceTest {
         }
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             assertTrue(localApplicationDataDirectory.isPresent());
-            //TODO
+            assertThat(localApplicationDataDirectory.get().toLowerCase()).contains("/.config");
         }
     }
 }
