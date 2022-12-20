@@ -200,6 +200,9 @@
                     <classifier>linux</classifier>
                 </dependency>
             </dependencies>
+            <properties>
+                <icon>injector.png</icon>
+            </properties>
         </profile>
         <profile>
             <id>mac</id>
