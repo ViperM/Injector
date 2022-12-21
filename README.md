@@ -35,3 +35,81 @@ A fat-jar with all dependencies will be created in the
 
 Executable files will be located in the
 `target/redistributable/Injector` folder
+
+### Download binaries
+
+TODO
+
+<table>
+<tr>
+  <td align="center">
+        <b>
+          <h1>
+            <img style="margin-right: 10px" src="docs/img/windows.png" alt="">
+            Windows
+          </h1>
+        </b>
+        <p><b>(64-bit)</b></p>
+  </td>
+  <td align="center"> 
+      <b>
+          <h1>
+            <img style="margin-right: 10px" src="docs/img/linux.png" alt="">
+            Linux
+          </h1>
+        </b>
+      <p><b>(64-bit)</b></p>
+  </td>
+
+  <td align="center">
+        <b>
+          <h1>
+            <img style="margin-right: 10px" src="docs/img/mac.png" alt="">
+            MacOS 
+          </h1>
+        </b>
+        <p><b>(64-bit)</b></p>
+  </td>
+</tr>
+<tr>
+  <td>
+<b>
+  <ul>
+      <li>
+        <h4>
+           <a href="https://github.com/ViperM/Injector/releases/download/v1.0/Injector.zip">Portable (.zip)</a>
+        </h4>
+      </li>
+  </ul>
+</b>
+  </td>
+  <td>
+<b>
+   <ul>
+        <li>
+          <h4>
+            <a href="https://github.com/ViperM/Injector/releases/download/v1.0/injector_1.0_amd64.deb">Debian Software Package (.deb)</a>
+          </h4>
+        </li>
+   </ul>
+</b>
+  </td>
+  <td>
+  <b>
+   <ul>
+        <li>
+          <h4>
+            <a href="https://github.com/ViperM/Injector/releases/download/v1.0/Injector-1.0.dmg">MAC Disk Image File (.dmg)</a>
+          </h4>
+        </li>
+   </ul>
+</b>
+  </td>
+</tr>
+</table>
+
+### Screenshots
+
+![Screenshot](docs/img/screenshots/injector-main.jpg)
+![Screenshot](docs/img/screenshots/injector-variables.jpg)
+![Screenshot](docs/img/screenshots/injector-settings.jpg)
