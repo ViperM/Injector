@@ -110,6 +110,6 @@ TODO
 
 ### Screenshots
 
-![Screenshot](docs/img/screenshots/injector-main.jpg)
-![Screenshot](docs/img/screenshots/injector-variables.jpg)
-![Screenshot](docs/img/screenshots/injector-settings.jpg)
+![Screenshot](docs/img/screenshots/injector_main.jpg)
+![Screenshot](docs/img/screenshots/injector_variables.jpg)
+![Screenshot](docs/img/screenshots/injector_settings.jpg)
