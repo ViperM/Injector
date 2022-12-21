@@ -37,9 +37,6 @@ Executable files will be located in the
 `target/redistributable/Injector` folder
 
 ### Download binaries
-
-TODO
-
 <table>
 <tr>
   <td align="center">
