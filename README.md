@@ -62,7 +62,7 @@ Executable files will be located in the
         <b>
           <h1>
             <img style="margin-right: 10px" src="docs/img/mac.png" alt="">
-            MacOS 
+            MacOS (x86)
           </h1>
         </b>
         <p><b>(64-bit)</b></p>
