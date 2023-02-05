@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<HBox fx:id="paneNewFile" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.mmsoftware.controller.NewFileController">
+    <VBox>
+        <Label text="Enter file name:"/>
+        <HBox>
+            <TextField fx:id="txtNewFileName" onKeyPressed="#handleTxtNewFileEnter"/>
+            <ChoiceBox fx:id="choiceExtensions" prefWidth="50.0"/>
+        </HBox>
+        <HBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+        </HBox.margin>
+    </VBox>
+</HBox>

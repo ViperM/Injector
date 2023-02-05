@@ -34,3 +34,8 @@ build/
 /mvnw
 /mvnw.cmd
 /.mvn/wrapper/
+
+### Custom ###
+dependency-reduced-pom.xml
+application.properties
+variables.txt
