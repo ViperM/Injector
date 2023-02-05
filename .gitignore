@@ -39,3 +39,6 @@ build/
 dependency-reduced-pom.xml
 application.properties
 variables.txt
+/windows/
+/linux/
+/mac/

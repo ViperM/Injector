@@ -106,6 +106,10 @@ Executable files will be located in the
 </tr>
 </table>
 
+### Contact
+
+<a href="mailto:mmsoft.viper@gmail.com">mmsoft.viper@gmail.com</a>
+
 ### Screenshots
 
 ![Screenshot](docs/img/screenshots/injector_main.jpg)
